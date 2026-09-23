@@ -1,0 +1,5 @@
+<resources>
+    <string name="home_title">Приложение для родителей</string>
+    <string name="home_stub_pending">Разделы появятся в следующих версиях</string>
+    <string name="home_stub_ready">Заглушка готова</string>
+</resources>
