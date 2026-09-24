@@ -1,0 +1,9 @@
+<resources>
+    <string name="questions_title">Вопросы</string>
+    <string name="questions_back">Назад</string>
+    <string name="questions_retry">Повторить</string>
+    <string name="questions_load_error">Не удалось загрузить тему. Проверьте подключение и попробуйте ещё раз</string>
+    <string name="questions_topic_placeholder">Вопросы по этой теме появятся позже</string>
+    <string name="questions_status_practicing">Тренируется</string>
+    <string name="questions_status_no_data">Нет данных</string>
+</resources>

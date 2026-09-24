@@ -32,4 +32,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "LCT Parents App"
 include(":app")
-include(":feature:home")
+include(":core:report")
+include(":feature:questions")
+include(":feature:quests")
+include(":feature:report")
+include(":feature:scanner")
+include(":feature:pin")

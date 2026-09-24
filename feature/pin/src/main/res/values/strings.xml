@@ -1,0 +1,11 @@
+<resources>
+    <string name="pin_setup_title">Родительский PIN-код</string>
+    <string name="pin_setup_hint_enter">Придумайте 4-значный PIN-код</string>
+    <string name="pin_setup_hint_confirm">Повторите PIN-код</string>
+    <string name="pin_setup_mismatch">PIN-коды не совпадают. Придумайте новый</string>
+    <string name="pin_save_error">Не удалось сохранить PIN-код. Попробуйте ещё раз</string>
+    <string name="pin_lock_title">Введите PIN-код</string>
+    <string name="pin_lock_hint">Введите родительский PIN-код</string>
+    <string name="pin_lock_wrong">Неверный PIN-код</string>
+    <string name="pin_delete">Удалить цифру</string>
+</resources>

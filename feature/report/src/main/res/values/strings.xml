@@ -1,0 +1,33 @@
+<resources>
+    <string name="report_title">Родительский режим</string>
+    <string name="report_back">Назад</string>
+    <string name="report_quests_title">Квесты из реальной жизни</string>
+    <string name="report_quests_promo">Создайте задание из реальной жизни и назначьте награду</string>
+    <string name="report_create_quest">Создать квест</string>
+    <string name="report_change_pet">Сменить питомца</string>
+    <string name="report_reset_title">Сбросить ID питомца?</string>
+    <string name="report_reset_message">Приложение перестанет открывать отчёт автоматически. ID можно будет ввести заново по QR-коду или вручную.</string>
+    <string name="report_reset_confirm">Сбросить</string>
+    <string name="report_reset_cancel">Отмена</string>
+    <string name="report_demo">Демо-режим</string>
+    <string name="report_pet_id">ID: %1$s</string>
+    <string name="report_empty_title">Подключите питомца</string>
+    <string name="report_empty_hint">Отсканируйте QR-код из детского приложения или введите ID вручную</string>
+    <string name="report_scan_qr">Сканировать QR-код</string>
+    <string name="report_manual_entry">Ввести ID вручную</string>
+    <string name="report_balance">Баланс монет</string>
+    <string name="report_mastered_tile">Освоено навыков</string>
+    <string name="report_mastered_value">%1$d из %2$d</string>
+    <string name="report_skills">Навыки</string>
+    <string name="report_skills_progress">%1$d из %2$d освоено</string>
+    <string name="report_skill_mastered">Освоен</string>
+    <string name="report_skill_practicing">Тренируется</string>
+    <string name="report_skill_no_data">Нет данных</string>
+    <string name="report_load_error">Не удалось загрузить отчёт. Проверьте подключение и попробуйте ещё раз</string>
+    <string name="report_retry">Повторить</string>
+    <string name="report_manual_title">Открыть отчёт вручную</string>
+    <string name="report_manual_hint">Введите ID питомца, полученный из QR-кода или у ребёнка</string>
+    <string name="report_manual_field">ID питомца</string>
+    <string name="report_manual_open">Открыть отчёт</string>
+    <string name="report_invalid_pet_id">Похоже, это не ID питомца. Проверьте символы</string>
+</resources>
