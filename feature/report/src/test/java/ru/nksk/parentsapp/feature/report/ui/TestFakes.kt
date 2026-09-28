@@ -19,9 +19,12 @@ internal class FakePetSessionStore : PetSessionStore {
             petIdFlow.value = value
         }
 
+    var saves: Int = 0
+
     override suspend fun lastPetId(): String? = petIdFlow.value
     override fun observePetId(): Flow<String?> = petIdFlow
     override suspend fun savePetId(petId: String) {
+        saves += 1
         petIdFlow.value = petId
     }
     override suspend fun clearPetId() {

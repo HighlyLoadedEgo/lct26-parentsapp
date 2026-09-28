@@ -279,7 +279,6 @@ fun StatisticsScreen(
     onAction: (StatisticsAction) -> Unit,
     onScanQr: () -> Unit,
     onManualInput: () -> Unit,
-    onChangePet: () -> Unit,
     onOpenTopic: (skillId: String, mastered: Boolean) -> Unit,
     onOpenQuests: () -> Unit,
     modifier: Modifier = Modifier,
@@ -290,7 +289,6 @@ fun StatisticsScreen(
             onConfirm = {
                 showResetDialog = false
                 onAction(StatisticsAction.ChangePet)
-                onChangePet()
             },
             onDismiss = { showResetDialog = false },
         )

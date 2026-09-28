@@ -37,16 +37,21 @@ fun EntryProviderScope<NavKey>.statisticsEntry(
         LaunchedEffect(source) {
             viewModel.load(source.petId)
         }
-        // After a confirmed reset the session is empty; reload lands on the empty chooser.
+        // After a confirmed reset the session is cleared first (resetDone is set only once the
+        // clear completes); only then swap the entry so the fresh one reads an empty store.
         LaunchedEffect(state.resetDone) {
-            if (state.resetDone) viewModel.load(null)
+            if (state.resetDone) {
+                onChangePet(source)
+                viewModel.load(null)
+                // Re-arm the signal so a later reset in the same entry triggers this again.
+                viewModel.consumeReset()
+            }
         }
         StatisticsScreen(
             state = state,
             onAction = viewModel::onAction,
             onScanQr = dropUnlessResumed { onScanQr(source) },
             onManualInput = dropUnlessResumed { onManualInput(source) },
-            onChangePet = dropUnlessResumed { onChangePet(source) },
             onOpenTopic = { skillId, mastered -> onOpenTopic(source, skillId, mastered) },
             onOpenQuests = dropUnlessResumed { onOpenQuests(source) },
         )

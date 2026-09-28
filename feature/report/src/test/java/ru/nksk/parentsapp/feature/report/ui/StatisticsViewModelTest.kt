@@ -40,6 +40,16 @@ class StatisticsViewModelTest {
         viewModel.load("def456")
         assertEquals("def456", repository.requestedPetId)
         assertEquals("def456", session.current)
+        assertEquals(1, session.saves)
+    }
+
+    @Test
+    fun `session reload never re-persists the remembered pet`() {
+        val session = FakePetSessionStore().apply { current = "abc123" }
+        val viewModel = StatisticsViewModel(FakeReportRepository(), session)
+        viewModel.load(null)
+        assertNotNull(viewModel.uiState.value.report)
+        assertEquals(0, session.saves)
     }
 
     @Test
@@ -59,6 +69,20 @@ class StatisticsViewModelTest {
         viewModel.onAction(StatisticsAction.ChangePet)
         assertNull(session.current)
         assertTrue(viewModel.uiState.value.resetDone)
+    }
+
+    @Test
+    fun `reset signal can be consumed and re-armed for a second reset`() {
+        val session = FakePetSessionStore().apply { current = "abc123" }
+        val viewModel = StatisticsViewModel(FakeReportRepository(), session)
+        viewModel.load(null)
+        viewModel.onAction(StatisticsAction.ChangePet)
+        viewModel.consumeReset()
+        assertEquals(false, viewModel.uiState.value.resetDone)
+        session.current = "def456"
+        viewModel.onAction(StatisticsAction.ChangePet)
+        assertTrue(viewModel.uiState.value.resetDone)
+        assertNull(session.current)
     }
 
     @Test

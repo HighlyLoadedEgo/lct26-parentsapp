@@ -53,7 +53,9 @@ class StatisticsViewModel @Inject constructor(
                     loadedPetId = null
                     it.copy(loading = false, report = null, errorRes = null)
                 }
-                else -> fetch(petId)
+                // Only a fresh hand-off (scanner) may persist; re-writing the store on a
+                // session reload would undo a reset that cleared it concurrently.
+                else -> fetch(petId, persistOnSuccess = scannedPetId != null)
             }
         }
     }
@@ -61,7 +63,7 @@ class StatisticsViewModel @Inject constructor(
     fun onAction(action: StatisticsAction) {
         when (action) {
             StatisticsAction.Reload -> viewModelScope.launch {
-                sessionStore.lastPetId()?.let { fetch(it) }
+                sessionStore.lastPetId()?.let { fetch(it, persistOnSuccess = false) }
             }
             // Clears the remembered pet; the entry then returns to the empty chooser state.
             StatisticsAction.ChangePet -> viewModelScope.launch {
@@ -72,12 +74,17 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    private fun fetch(petId: String) {
+    /** Re-arms the one-shot [StatisticsUiState.resetDone] signal once the UI has consumed it. */
+    fun consumeReset() {
+        state.update { if (it.resetDone) it.copy(resetDone = false) else it }
+    }
+
+    private fun fetch(petId: String, persistOnSuccess: Boolean) {
         state.update { it.copy(loading = true, errorRes = null) }
         viewModelScope.launch {
             runCatching { repository.getReport(petId) }
                 .onSuccess { report ->
-                    sessionStore.savePetId(petId)
+                    if (persistOnSuccess) sessionStore.savePetId(petId)
                     loadedPetId = petId
                     state.update { it.copy(loading = false, report = report) }
                 }
