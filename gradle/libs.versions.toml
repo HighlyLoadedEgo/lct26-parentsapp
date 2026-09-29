@@ -1,4 +1,5 @@
 [versions]
+rustoreAppupdate = "10.5.1"
 agp = "9.2.1"
 coreKtx = "1.19.0"
 junit = "4.13.2"
@@ -24,6 +25,7 @@ navigationEvent = "1.1.2"
 savedState = "1.4.0"
 
 [libraries]
+rustore-appupdate = { module = "ru.rustore.sdk:appupdate", version.ref = "rustoreAppupdate" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifecycle-viewmodel-compose", version.ref = "androidxHilt" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
