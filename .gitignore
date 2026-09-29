@@ -16,6 +16,16 @@
 local.properties
 /docs/*
 !/docs/architecture.md
+!/docs/design/
+/docs/design/*
+!/docs/design/assets/
+/docs/design/assets/*
+!/docs/design/assets/README.md
+!/docs/design/assets/catalog.md
+!/docs/design/assets/manifest.json
+!/docs/design/assets/sources/
+/docs/design/assets/sources/*
+!/docs/design/assets/sources/launcher-raccoon-jar/
 .pdf
 /*.pdf
 /tmp/*

@@ -12,3 +12,18 @@ Six icons copied byte-for-byte from LCTApp main `587af69`. The upstream import w
 | [gear_cap_lct2026_blue](../../../app/src/main/res/drawable-nodpi/gear_cap_lct2026_blue.webp) | [3857:711](https://www.figma.com/design/bAod1cKtTX9Q8omQ067q3q/?node-id=3857-711) | `5955132bf18fe99d1b40a9a9bfa7ae7fbe4971e777100d72b4b740936c84df0f` |
 | [gear_cap_lct2026_emerald](../../../app/src/main/res/drawable-nodpi/gear_cap_lct2026_emerald.webp) | [3857:716](https://www.figma.com/design/bAod1cKtTX9Q8omQ067q3q/?node-id=3857-716) | `b66cb77e1d9b771f4a1170e17717fc274cd70c31a77e01c5eac562fd15f70630` |
 | [gear_cap_lct2026_burgundy](../../../app/src/main/res/drawable-nodpi/gear_cap_lct2026_burgundy.webp) | [3857:721](https://www.figma.com/design/bAod1cKtTX9Q8omQ067q3q/?node-id=3857-721) | `51799d688b12a921781f97ee2b892514cb499a00efd3861fe03588913b44fa98` |
+
+## Иконки приложения
+
+Источник: вложение пользователя `tg_image_4196015632.png`, 2026-09-29.
+Происхождение, мастер и промпт описаны в [руководстве](README.md).
+Точные пути, размеры файлов и контрольные суммы — в [манифесте](manifest.json).
+
+| Ресурс | Размеры mdpi–xxxhdpi | Назначение |
+| --- | --- | --- |
+| `R.mipmap.ic_launcher_art` | 108, 162, 216, 324, 432 px | Непрозрачная сцена для адаптивной иконки |
+| `R.mipmap.ic_launcher` | 48, 72, 96, 144, 192 px; XML v26 | Скруглённый квадрат Android 7 / адаптивная иконка |
+| `R.mipmap.ic_launcher_round` | 48, 72, 96, 144, 192 px; XML v26 | Круг Android 7 / адаптивная иконка |
+| `R.drawable.ic_launcher_monochrome` | Вектор 108 × 108 dp | Банка и лапка для тематических иконок |
+
+Все перечисленные ресурсы доступны в проекте.

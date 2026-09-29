@@ -261,5 +261,183 @@
       "copied_from_commit": "587af69",
       "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
     }
-  ]
+  ],
+  "launcher_icons": {
+    "requested_on": "2026-09-29",
+    "source_method": "built_in_imagegen_composition_adaptation",
+    "source": {
+      "path": "docs/design/assets/sources/launcher-raccoon-jar/adaptive-source.png",
+      "bytes": 2795331,
+      "sha256": "b6a78c8404852b5441e01434b48359783c4aaebec8c7c8015d6d2341d94418ed",
+      "width": 1254,
+      "height": 1254,
+      "rgba_sha256": "5fe291c7d74a76724871eeabd9e3b23fa46c03241de942086a71da74654a5e2e"
+    },
+    "reference_sources": [
+      {
+        "path": "docs/design/assets/sources/launcher-raccoon-jar/source.png",
+        "bytes": 3048303,
+        "sha256": "7e4eba92fb75502cae97f36413a89769dbb71a2a1a42d479a5b6977996c94bed",
+        "width": 1254,
+        "height": 1254,
+        "rgba_sha256": "324b1323c2ada2b18c2f1843933b274ad38385d234de17d18c3a725cd7d9035a"
+      }
+    ],
+    "user_attachment": "tg_image_4196015632.png",
+    "prompt": "docs/design/assets/sources/launcher-raccoon-jar/prompt.md",
+    "monochrome_source": {
+      "path": "docs/design/assets/sources/launcher-raccoon-jar/monochrome.svg",
+      "bytes": 610,
+      "sha256": "b4b5cb78aebe2024241bd406e76689dc423757ff180110d17d3d44421d9cdcb3"
+    },
+    "conversion": {
+      "pillow_version": "12.3.0",
+      "format": "lossless exact WebP",
+      "resampling": "Lanczos",
+      "adaptive_canvas_dp": 108,
+      "padding": "none; natural garden scenery fills the source",
+      "resampling_passes_per_output": 1,
+      "legacy_icon_dp": 48,
+      "legacy_viewport_dp": 72,
+      "layers": "opaque composite background, transparent foreground",
+      "monochrome": "jar and paw coin SVG reused from LCTApp; SVG paths copied to vector XML"
+    },
+    "outputs": [
+      {
+        "path": "app/src/main/res/mipmap-mdpi/ic_launcher_art.webp",
+        "bytes": 28278,
+        "sha256": "28f2f81929a77db9b12ea6921766b72c0583958827a7bf72879d478d2766167a",
+        "width": 108,
+        "height": 108,
+        "rgba_sha256": "074dd3f5d40394ac82a43e72f925be9005270ca3724034e4afb4b8b55180f7f0"
+      },
+      {
+        "path": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+        "bytes": 6350,
+        "sha256": "24ac2bbc2fb7671fcba736b3ff956bbc19b6a90288b9b02dada09a702313e01a",
+        "width": 48,
+        "height": 48,
+        "rgba_sha256": "720f3af65e61a2f06bc49fb9f2195743bb2965d7ed04f41c021f96a3ad4ad6ae"
+      },
+      {
+        "path": "app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+        "bytes": 5902,
+        "sha256": "8d28e4a1146327f6c6550c2114001ade8c23dee6cd494403ede9dd1d21a5bee6",
+        "width": 48,
+        "height": 48,
+        "rgba_sha256": "ecad2e189bfaf66dbe3ce90197ce77778b4ae1af8f4dd82d57134833b84bede1"
+      },
+      {
+        "path": "app/src/main/res/mipmap-hdpi/ic_launcher_art.webp",
+        "bytes": 61038,
+        "sha256": "1106facd04b7c3a178395fe57579a084ada647c3ef3b77427f0acd11e2b8f5f5",
+        "width": 162,
+        "height": 162,
+        "rgba_sha256": "2afeac1f4970286921465d089b414a1f6f45a07ffd9711827539d2c613d20b41"
+      },
+      {
+        "path": "app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+        "bytes": 13160,
+        "sha256": "dcc91f43b959ca416be136966d1b13a43ed0318d584b7092132a13df0b652fb0",
+        "width": 72,
+        "height": 72,
+        "rgba_sha256": "5f4a3b169424ae21dcb0a2ad90956dfbe92638b335590a4ba35317417c61c837"
+      },
+      {
+        "path": "app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+        "bytes": 11956,
+        "sha256": "bec918b2c608dc6139f1bce0750a9c56e4c787e5cb54ec79bb5102c86eb6a148",
+        "width": 72,
+        "height": 72,
+        "rgba_sha256": "90cccaa0006d2d6c3b3a6aba090f13c6d72fac1a7278f94456157bf01fd2bb48"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_art.webp",
+        "bytes": 103288,
+        "sha256": "222fdc3850ccf5f5791a7c15c30d7cb2f3eaf603be4efabf3328c39fe16a63f1",
+        "width": 216,
+        "height": 216,
+        "rgba_sha256": "f6e587e9c3669fbb10df8fdd1973b478c7084dfc30ed2259e3f210501cebc755"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+        "bytes": 21828,
+        "sha256": "59da87796c0ed0e20a342b43606c559a4f30a3f93b33a76e42f93cf4c7642d10",
+        "width": 96,
+        "height": 96,
+        "rgba_sha256": "571e94e48ef01143462228960e68562825c0d3e7a12de7f78f07163eadf7c873"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+        "bytes": 19828,
+        "sha256": "a5b23efff11cfa66abbd583cfc838d9211a33be3deef9ae8136e2716a6203ade",
+        "width": 96,
+        "height": 96,
+        "rgba_sha256": "4e870a960a005c003b163570fcfb8527276cbb36dbae84faa7e8379ab3331f0f"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_art.webp",
+        "bytes": 215778,
+        "sha256": "6b3c20eadb92b0b23872e804744988d52f0c9ffde0d1aad2e99c475f4b5bed65",
+        "width": 324,
+        "height": 324,
+        "rgba_sha256": "d06ca3f42766ef900e806c3011d6106d18246659ff27d6b2b393e9155da65741"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+        "bytes": 46398,
+        "sha256": "3d6504b2795d61047a120e886925fd9a2277d843a1e2ad725dd280662a5bdc5f",
+        "width": 144,
+        "height": 144,
+        "rgba_sha256": "6f2a607d956095a4eff7c2c5df129172c6f0786639fd9cb0294aace1368369d4"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+        "bytes": 40348,
+        "sha256": "b15a56fef562469fbee8f42cbed35b51aa40fdb67a4431acb29bb7bd2da8e9f9",
+        "width": 144,
+        "height": 144,
+        "rgba_sha256": "4e45b65eab409ce1b467543a01db6671c7222b67d054d6d93ae1c50c7a14fb52"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_art.webp",
+        "bytes": 362350,
+        "sha256": "09b8970faf7d5ab07e99b8a570840af023815b1286ebf33ff8fb4765ee838809",
+        "width": 432,
+        "height": 432,
+        "rgba_sha256": "b1445eee29b558e1f56da340ee7c9cc6b9db0f5b35d9186ced110cf3f5626b6c"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+        "bytes": 77672,
+        "sha256": "cc1469c27e49489708d9c6e4b94d14cb2d4920d629eb50f24e90e5960bc0b5c2",
+        "width": 192,
+        "height": 192,
+        "rgba_sha256": "723992842fa116f30101169a8fea00e6c053907027e0d86d7005ac6af6f6051c"
+      },
+      {
+        "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+        "bytes": 65816,
+        "sha256": "eafa7da9bab7bc49d7133e64b3e725c85892b940178be78b0f07bdca25c974e2",
+        "width": 192,
+        "height": 192,
+        "rgba_sha256": "57df124d7e3b7739a63e319c1d33476db49daa7c6490b136e05d91735a5fe8fe"
+      },
+      {
+        "path": "app/src/main/res/drawable/ic_launcher_monochrome.xml",
+        "bytes": 838,
+        "sha256": "cde1fc25b4d06a7cba7b108e1b9e3b01098c3cc9ba039d45b727d54865b0d2c8"
+      },
+      {
+        "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+        "bytes": 400,
+        "sha256": "950bd2febce1582cb5e34c2f1bbbad1ec76f8b58d069388146c30c89206dda35"
+      },
+      {
+        "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+        "bytes": 400,
+        "sha256": "950bd2febce1582cb5e34c2f1bbbad1ec76f8b58d069388146c30c89206dda35"
+      }
+    ]
+  }
 }
