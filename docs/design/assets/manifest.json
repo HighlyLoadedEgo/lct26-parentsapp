@@ -1,0 +1,265 @@
+{
+  "source_repository": "LCTApp",
+  "source_commit": "587af69",
+  "copied_on": "2026-09-29",
+  "assets": [
+    {
+      "resource": "gear_cap_moscow_blue",
+      "category": "Moscow and LCT 2026 caps",
+      "path": "app/src/main/res/drawable-nodpi/gear_cap_moscow_blue.webp",
+      "format": "webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 165386,
+      "sha256": "8273dc37d84eb31754dd7fdb817bb573f0ac0ba93d881b249649c6564ac395f6",
+      "rgba_sha256": "61e6ca21111b66c1cc00dd1a9581643830778edaa6329c07b2a161f4bd61bb1c",
+      "alpha_bounds": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_sha256": "7819f5675ddd8568aee3b94a2c22ba1adb531a69341b379975480c1ee92fa541",
+      "figma": {
+        "file_key": "bAod1cKtTX9Q8omQ067q3q",
+        "node_id": "3860:705",
+        "node_name": "Предмет · Кепка с гербом Москвы · синяя · без ремешка",
+        "export_scale": 1
+      },
+      "design_canvas": [
+        512,
+        512
+      ],
+      "provenance": {
+        "type": "figma-node-export",
+        "date": "2026-09-29"
+      },
+      "conversion": {
+        "format": "WebP",
+        "lossless": true,
+        "exact": true,
+        "method": 6,
+        "resized": false,
+        "pillow_version": "12.3.0"
+      },
+      "upstream_source_path": "docs/design/assets/sources/caps-2026-09-29/gear_cap_moscow_blue.png",
+      "copied_from_commit": "587af69",
+      "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
+    },
+    {
+      "resource": "gear_cap_moscow_emerald",
+      "category": "Moscow and LCT 2026 caps",
+      "path": "app/src/main/res/drawable-nodpi/gear_cap_moscow_emerald.webp",
+      "format": "webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 158878,
+      "sha256": "5bee508d1d8072ae51fbddd1dd211a1bb1f3b0e513049e6573bdbad8353656ac",
+      "rgba_sha256": "0721260a757636a5b0dfb202a033ff62b72b3530b935b84bfc02b48600590b20",
+      "alpha_bounds": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_sha256": "9ff2ea416d48706af036677c5930aa59ede967d83233f4987bf4dce7fbf33e3e",
+      "figma": {
+        "file_key": "bAod1cKtTX9Q8omQ067q3q",
+        "node_id": "3860:706",
+        "node_name": "Предмет · Кепка с гербом Москвы · изумрудная · без ремешка",
+        "export_scale": 1
+      },
+      "design_canvas": [
+        512,
+        512
+      ],
+      "provenance": {
+        "type": "figma-node-export",
+        "date": "2026-09-29"
+      },
+      "conversion": {
+        "format": "WebP",
+        "lossless": true,
+        "exact": true,
+        "method": 6,
+        "resized": false,
+        "pillow_version": "12.3.0"
+      },
+      "upstream_source_path": "docs/design/assets/sources/caps-2026-09-29/gear_cap_moscow_emerald.png",
+      "copied_from_commit": "587af69",
+      "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
+    },
+    {
+      "resource": "gear_cap_moscow_burgundy",
+      "category": "Moscow and LCT 2026 caps",
+      "path": "app/src/main/res/drawable-nodpi/gear_cap_moscow_burgundy.webp",
+      "format": "webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 162918,
+      "sha256": "09d84548084b19bdb0b73b7f7da25f588407cac78ae8bc09511f445ec9d8c4a5",
+      "rgba_sha256": "1e22d4f681a0540492194f19e9263ec6c9b117600f75785ba66806224bc62f8e",
+      "alpha_bounds": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_sha256": "c468f352495f36faddf9cc79ea9b5473c8dc812c71f3f17447af69be0434ce5e",
+      "figma": {
+        "file_key": "bAod1cKtTX9Q8omQ067q3q",
+        "node_id": "3860:707",
+        "node_name": "Предмет · Кепка с гербом Москвы · бордовая · без ремешка",
+        "export_scale": 1
+      },
+      "design_canvas": [
+        512,
+        512
+      ],
+      "provenance": {
+        "type": "figma-node-export",
+        "date": "2026-09-29"
+      },
+      "conversion": {
+        "format": "WebP",
+        "lossless": true,
+        "exact": true,
+        "method": 6,
+        "resized": false,
+        "pillow_version": "12.3.0"
+      },
+      "upstream_source_path": "docs/design/assets/sources/caps-2026-09-29/gear_cap_moscow_burgundy.png",
+      "copied_from_commit": "587af69",
+      "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
+    },
+    {
+      "resource": "gear_cap_lct2026_blue",
+      "category": "Moscow and LCT 2026 caps",
+      "path": "app/src/main/res/drawable-nodpi/gear_cap_lct2026_blue.webp",
+      "format": "webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 170362,
+      "sha256": "5955132bf18fe99d1b40a9a9bfa7ae7fbe4971e777100d72b4b740936c84df0f",
+      "rgba_sha256": "20d0ce5f2b3933706e02272796150d6fa2900544de1f103f0941d1c362a828b5",
+      "alpha_bounds": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_sha256": "854322114c194deeab7d5a4ef758143a83c6fe87a2b272bb1b165c5cf017399a",
+      "figma": {
+        "file_key": "bAod1cKtTX9Q8omQ067q3q",
+        "node_id": "3857:711",
+        "node_name": "Предмет · Кепка ЛЦТ 2026 · синяя · без ремешка",
+        "export_scale": 1
+      },
+      "design_canvas": [
+        512,
+        512
+      ],
+      "provenance": {
+        "type": "figma-node-export",
+        "date": "2026-09-29"
+      },
+      "conversion": {
+        "format": "WebP",
+        "lossless": true,
+        "exact": true,
+        "method": 6,
+        "resized": false,
+        "pillow_version": "12.3.0"
+      },
+      "upstream_source_path": "docs/design/assets/sources/caps-2026-09-29/gear_cap_lct2026_blue.png",
+      "copied_from_commit": "587af69",
+      "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
+    },
+    {
+      "resource": "gear_cap_lct2026_emerald",
+      "category": "Moscow and LCT 2026 caps",
+      "path": "app/src/main/res/drawable-nodpi/gear_cap_lct2026_emerald.webp",
+      "format": "webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 163318,
+      "sha256": "b66cb77e1d9b771f4a1170e17717fc274cd70c31a77e01c5eac562fd15f70630",
+      "rgba_sha256": "de12f73f712a440baeb668e3d925c959fbf41ba5ce727ab2faab0225fa415e6d",
+      "alpha_bounds": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_sha256": "eccc5baa3e502eb48220422cf6f79b3dcbb77ee18f4f230efb3338e52f673467",
+      "figma": {
+        "file_key": "bAod1cKtTX9Q8omQ067q3q",
+        "node_id": "3857:716",
+        "node_name": "Предмет · Кепка ЛЦТ 2026 · изумрудная · без ремешка",
+        "export_scale": 1
+      },
+      "design_canvas": [
+        512,
+        512
+      ],
+      "provenance": {
+        "type": "figma-node-export",
+        "date": "2026-09-29"
+      },
+      "conversion": {
+        "format": "WebP",
+        "lossless": true,
+        "exact": true,
+        "method": 6,
+        "resized": false,
+        "pillow_version": "12.3.0"
+      },
+      "upstream_source_path": "docs/design/assets/sources/caps-2026-09-29/gear_cap_lct2026_emerald.png",
+      "copied_from_commit": "587af69",
+      "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
+    },
+    {
+      "resource": "gear_cap_lct2026_burgundy",
+      "category": "Moscow and LCT 2026 caps",
+      "path": "app/src/main/res/drawable-nodpi/gear_cap_lct2026_burgundy.webp",
+      "format": "webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 165128,
+      "sha256": "51799d688b12a921781f97ee2b892514cb499a00efd3861fe03588913b44fa98",
+      "rgba_sha256": "8a73491ac990276326b93ae84d44c8e3e4570e1011f6d69b22b8d30d93142063",
+      "alpha_bounds": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "source_sha256": "db63366b6fb366b74c4d3594c5f106c3c4bdc87c6070a8da196255d7eccea1fd",
+      "figma": {
+        "file_key": "bAod1cKtTX9Q8omQ067q3q",
+        "node_id": "3857:721",
+        "node_name": "Предмет · Кепка ЛЦТ 2026 · бордовая · без ремешка",
+        "export_scale": 1
+      },
+      "design_canvas": [
+        512,
+        512
+      ],
+      "provenance": {
+        "type": "figma-node-export",
+        "date": "2026-09-29"
+      },
+      "conversion": {
+        "format": "WebP",
+        "lossless": true,
+        "exact": true,
+        "method": 6,
+        "resized": false,
+        "pillow_version": "12.3.0"
+      },
+      "upstream_source_path": "docs/design/assets/sources/caps-2026-09-29/gear_cap_lct2026_burgundy.png",
+      "copied_from_commit": "587af69",
+      "copy_method": "Exact WebP bytes copied from LCTApp; no conversion, resizing or canvas changes"
+    }
+  ]
+}

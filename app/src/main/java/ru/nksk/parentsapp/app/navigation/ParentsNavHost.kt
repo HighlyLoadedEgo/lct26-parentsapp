@@ -70,7 +70,7 @@ fun ParentsNavHost(
             )
             questionTopicEntry(onBack = navigator::goBack)
             questsEntry(onBack = navigator::goBack)
-            questEntry(onBack = navigator::goBack)
+            questEntry(onBack = navigator::goBack, rewardArtwork = ::ParentCapImage)
         },
     )
 }
