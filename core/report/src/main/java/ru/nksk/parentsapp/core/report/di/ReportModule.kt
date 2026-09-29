@@ -17,6 +17,9 @@ import ru.nksk.parentsapp.core.report.data.ParentReportRepository
 import ru.nksk.parentsapp.core.report.data.ParentReportRepositoryImpl
 import ru.nksk.parentsapp.core.report.data.PetSessionStore
 import ru.nksk.parentsapp.core.report.data.PetSessionStoreImpl
+import ru.nksk.parentsapp.core.report.rewards.ParentQuestRewardsApi
+import ru.nksk.parentsapp.core.report.rewards.ParentQuestRewardsRepository
+import ru.nksk.parentsapp.core.report.rewards.RemoteParentQuestRewardsRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -48,6 +51,11 @@ internal object ReportNetworkModule {
 
     @Provides
     @Singleton
+    fun provideParentQuestRewardsApi(retrofit: Retrofit): ParentQuestRewardsApi =
+        retrofit.create(ParentQuestRewardsApi::class.java)
+
+    @Provides
+    @Singleton
     fun provideParentReportApi(retrofit: Retrofit): ParentReportApi =
         retrofit.create(ParentReportApi::class.java)
 }
@@ -55,6 +63,10 @@ internal object ReportNetworkModule {
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class ReportRepositoryModule {
+    @Binds
+    @Singleton
+    internal abstract fun bindParentQuestRewardsRepository(impl: RemoteParentQuestRewardsRepository): ParentQuestRewardsRepository
+
     @Binds
     @Singleton
     internal abstract fun bindParentReportRepository(impl: ParentReportRepositoryImpl): ParentReportRepository

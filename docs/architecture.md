@@ -8,12 +8,13 @@ Preferences DataStore.
 
 - `:app` owns the Activity, composition, theme, navigation stack, route serializers
   and navigation policy. Features receive state and callbacks, never a navigator.
-- `:core:report` owns the parent report API, DTOs, repository and remembered device
-  ID (`PetSessionStore`). Report and questions consume that same contract.
+- `:core:report` owns the parent report API, remembered device ID (`PetSessionStore`),
+  and parent cap rewards API/repository with durable pending requests.
+- `:core:ui` owns the item carousel reused from the main game onboarding.
 - `:feature:pin` owns PIN storage, verification and the access gate.
 - `:feature:report` owns the report, manual ID entry and profile reset.
 - `:feature:questions` owns skill details and published conversation materials.
-- `:feature:quests` owns the three authored local demos and their checklist state.
+- `:feature:quests` owns the three authored quests, checklist and cap selection state.
 - `:feature:scanner` owns CameraX/ML Kit QR scanning and runtime camera permission.
 
 ViewModels expose immutable state through StateFlow. Navigation entries obtain
@@ -43,7 +44,7 @@ Reset storage work is separate from cancellable fetch work, and the UI waits for
 it to finish before offering another navigation action.
 
 `QuestionTopic(skillId)` carries only the skill ID. `Quest(ParentQuest)` carries
-only the authored demo identifier. AppNavigationSavedState registers both keys.
+only the authored quest identifier. AppNavigationSavedState registers both keys.
 Old `Quests`, `PinSetup`, and `PinLock` serializers remain for compatibility;
 new PIN access is always enforced outside the navigation tree.
 
@@ -90,13 +91,38 @@ See [verification](verification/parent-parity-2026-09-29.md).
 
 ## Quests
 
-Shopping, Weekend and Second life are copied from the main app's authored demos
-(PARENT-MODE-D-006/007/008). Each shows its description, four checkboxes, progress,
-an accessory placeholder and local completion. All four checks are required;
-completion freezes the checklist. A new entry starts fresh. No reward request,
-game state write, new quest content or persistent demo progress is introduced.
-There is no Create quest action. The old Quests placeholder and QuestStore remain
-for compatibility; the latter does not store the new demo progress.
+Shopping, Weekend and Second life retain the main app's authored content
+(PARENT-MODE-D-006/007/008) and four required checkboxes. Completing a quest now
+issues one of the same six caps through the parent reward contract. The carousel
+and six bundled icons come directly from the game app; the app supplies artwork
+through a composable slot. Already owned/issued caps cannot be newly granted.
+
+**PARENT-STANDALONE-D-002 — Принято пользователем, 2026-09-29.** Both applications
+have symmetric cap selection and explicit issuance. The standalone parent does
+not apply inventory changes immediately; only the game client applies/ACKs the
+grant. Issuance succeeds after a matching server grant. No snapshot upload, game
+state replacement, automatic issuance or delivery ACK happens in this app.
+
+Availability uses the currently linked device's downloadable snapshot plus its
+complete reward journal (including acknowledged grants). No snapshot means the
+child must first synchronize the game. New issuance rechecks availability and
+target; changing device/run requires reopening the quest. Remote state cannot
+reflect unsynchronized child changes: the game client's atomic duplicate guard
+ensures another copy of an already owned cap is not added during offline races.
+
+Before HTTP, the exact request and idempotency key are durably saved in
+`noBackupFilesDir/parent_quest_rewards.preferences_pb`, scoped by device/run/quest.
+Timeouts, cancellation, uncertain replies and process death retain that request.
+Retry uses the same key/body even if the journal already contains the grant.
+Only a validated matching grant or definite UNKNOWN_ACCESSORY/INVALID_REWARD
+rejection clears it. HTTP 429 respects a persisted Retry-After deadline.
+
+Checklist/completion UI remains local to the quest entry. Reopening a pending
+issuance restores its cap and completed checklist; reopening a finished quest
+starts fresh, with the already granted cap unavailable. There is no Create quest
+action. The old Quests placeholder and QuestStore remain for compatibility.
+See [reward contract](parent-cap-rewards.md) and
+[cap artwork provenance](design/assets/README.md).
 
 ## Application updates
 

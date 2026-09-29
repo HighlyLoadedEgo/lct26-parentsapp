@@ -1,5 +1,7 @@
 package ru.nksk.parentsapp.feature.quests.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -22,10 +24,14 @@ fun EntryProviderScope<NavKey>.questsEntry(onBack: (Quests) -> Unit) {
 @SerialName("parent_quest")
 data class Quest(val quest: ru.nksk.parentsapp.feature.quests.ui.ParentQuest) : NavKey
 
-fun EntryProviderScope<NavKey>.questEntry(onBack: (Quest) -> Unit) {
+fun EntryProviderScope<NavKey>.questEntry(
+    onBack: (Quest) -> Unit,
+    rewardArtwork: @Composable (String, Modifier) -> Unit,
+) {
     entry<Quest> { source ->
         ru.nksk.parentsapp.feature.quests.ui.ParentQuestEntry(
             quest = source.quest,
+            rewardArtwork = rewardArtwork,
             onBack = { onBack(source) },
         )
     }
