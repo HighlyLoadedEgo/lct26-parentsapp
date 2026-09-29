@@ -28,7 +28,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import ru.nksk.parentsapp.core.report.data.SkillDto
 import ru.nksk.parentsapp.core.report.data.SkillStatusDto
@@ -102,7 +109,7 @@ private fun TopicBody(topic: SkillDto) {
             .padding(horizontal = 20.dp),
     ) {
         val statusLabel = stringResource(
-            when (topic.status) {
+            if (!topic.assessmentAvailable) R.string.questions_assessment_unavailable else when (topic.status) {
                 SkillStatusDto.MASTERED -> R.string.questions_status_mastered
                 SkillStatusDto.PRACTICING -> R.string.questions_status_practicing
                 SkillStatusDto.NO_DATA -> R.string.questions_status_no_data
@@ -126,7 +133,7 @@ private fun TopicBody(topic: SkillDto) {
                 .mapIndexed { index, question -> "${index + 1}. $question" }.joinToString("\n\n"))
             MaterialCard(stringResource(R.string.questions_takeaway), topic.parentTakeaway)
             MaterialCard(stringResource(R.string.questions_research), topic.researchBasis)
-            MaterialCard(stringResource(R.string.questions_sources), topic.researchSources.joinToString("\n\n"))
+            MaterialCard(stringResource(R.string.questions_sources), researchSourceLinks(topic.researchSources))
         } else {
             MaterialCard(stringResource(R.string.questions_conversation), stringResource(R.string.questions_topic_placeholder))
         }
@@ -135,12 +142,31 @@ private fun TopicBody(topic: SkillDto) {
 
 @Composable
 private fun MaterialCard(title: String, body: String) {
+    MaterialCard(title, AnnotatedString(body))
+}
+
+@Composable
+private fun MaterialCard(title: String, body: AnnotatedString) {
     SelectionContainer {
         Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)).padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium)
             Text(body, style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}
+
+@Composable
+private fun researchSourceLinks(sources: List<String>): AnnotatedString {
+    val styles = TextLinkStyles(SpanStyle(
+        color = MaterialTheme.colorScheme.primary,
+        textDecoration = TextDecoration.Underline,
+    ))
+    return buildAnnotatedString {
+        sources.forEachIndexed { index, source ->
+            if (index > 0) append("\n\n")
+            withLink(LinkAnnotation.Url(source, styles)) { append(source) }
         }
     }
 }

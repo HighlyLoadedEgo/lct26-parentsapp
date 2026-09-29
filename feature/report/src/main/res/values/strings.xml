@@ -33,4 +33,11 @@
     <string name="report_skill_has_problem">Есть трудности</string>
     <string name="report_refresh">Обновить отчёт</string>
     <string name="report_reset_error">Не удалось сбросить ID. Попробуйте ещё раз</string>
+    <string name="report_money_breakdown">Доступно: %1$d · Накоплено: %2$d</string>
+    <string name="report_cloud_data">По последней синхронизации детского приложения</string>
+    <string name="report_assessment_unavailable">Оценка недоступна</string>
+    <string name="report_assessments_unavailable">Не удалось получить оценки навыков. Обновите отчёт позже.</string>
+    <string name="report_assessments_stale">Оценки ещё не учитывают последние действия ребёнка.</string>
+    <string name="report_materials_error">Не удалось загрузить материалы. Обновите отчёт позже.</string>
+    <string name="report_snapshot_missing">Сохранение игры пока недоступно. Сначала синхронизируйте детское приложение и обновите отчёт.</string>
 </resources>
