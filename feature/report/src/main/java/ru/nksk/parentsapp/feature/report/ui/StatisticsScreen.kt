@@ -105,7 +105,7 @@ private fun SkillCard(
     modifier: Modifier = Modifier,
 ) {
     val statusLabel = stringResource(
-        when (skill.status) {
+        if (!skill.assessmentAvailable) R.string.report_assessment_unavailable else when (skill.status) {
             SkillStatusDto.MASTERED -> R.string.report_skill_mastered
             SkillStatusDto.PRACTICING -> R.string.report_skill_practicing
             SkillStatusDto.NO_DATA -> R.string.report_skill_no_data
@@ -310,10 +310,9 @@ fun StatisticsScreen(
                                     container = MaterialTheme.colorScheme.secondary,
                                 )
                             }
-                            Chip(
-                                label = report.pet.temper,
-                                container = MaterialTheme.colorScheme.surfaceVariant,
-                            )
+                            if (report.pet.temper.isNotBlank()) {
+                                Chip(label = report.pet.temper, container = MaterialTheme.colorScheme.surfaceVariant)
+                            }
                         }
                     }
                 Row(
@@ -330,7 +329,7 @@ fun StatisticsScreen(
                     Box(modifier = Modifier.weight(1f)) {
                         StatTile(
                             label = stringResource(R.string.report_mastered_tile),
-                            value = stringResource(
+                            value = if (!report.assessmentsAvailable) "—" else stringResource(
                                 R.string.report_mastered_value,
                                 mastered,
                                 skills.size,
@@ -339,16 +338,28 @@ fun StatisticsScreen(
                         )
                         // Full-height pet standing on the tile's top edge; the art has transparent
                         // margins, so it overlaps the tile a little and reads as standing on it.
-                        Image(
-                            painter = painterResource(R.drawable.img_pet_stand),
-                            contentDescription = null,
+                        reportPetArtwork(report.pet)?.let { artwork -> Image(
+                            painter = painterResource(artwork),
+                            contentDescription = report.pet.name,
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .offset(y = (-74).dp)
                                 .size(88.dp),
-                        )
+                        ) }
                     }
                 }
+                    Text(
+                        stringResource(R.string.report_money_breakdown, report.pet.availableBalance, report.pet.savingsBalance),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                    Text(stringResource(R.string.report_cloud_data), style = MaterialTheme.typography.bodySmall)
+                    if (!report.assessmentsAvailable) {
+                        Text(stringResource(R.string.report_assessments_unavailable))
+                    } else if (report.assessmentsStale) {
+                        Text(stringResource(R.string.report_assessments_stale))
+                    }
+                    if (report.materialsLoadFailed) Text(stringResource(R.string.report_materials_error))
                     if (state.loading) {
                         CircularProgressIndicator(Modifier.padding(top = 16.dp).size(24.dp))
                     }
@@ -369,7 +380,7 @@ fun StatisticsScreen(
                         )
                         Spacer(Modifier.weight(1f))
                         Text(
-                            text = stringResource(
+                            text = if (!report.assessmentsAvailable) stringResource(R.string.report_assessment_unavailable) else stringResource(
                                 R.string.report_skills_progress,
                                 mastered,
                                 skills.size,

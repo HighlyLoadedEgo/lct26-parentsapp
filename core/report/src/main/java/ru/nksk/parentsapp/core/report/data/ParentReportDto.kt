@@ -16,6 +16,9 @@ data class ParentReportResponse(
     val pet: PetDto,
     val skills: List<SkillDto>,
     @SerialName("isDemo") val isDemo: Boolean,
+    val assessmentsAvailable: Boolean = true,
+    val assessmentsStale: Boolean = false,
+    val materialsLoadFailed: Boolean = false,
 )
 
 @Serializable
@@ -26,6 +29,10 @@ data class PetDto(
     val balance: Long,
     @SerialName("selectedLookId") val selectedLookId: String,
     @SerialName("visualState") val visualState: String,
+    val age: PetAgeDto = PetAgeDto.CUB,
+    val color: PetColorDto = PetColorDto.COPPER,
+    val availableBalance: Long = balance,
+    val savingsBalance: Long = 0,
 )
 
 @Serializable
@@ -34,6 +41,7 @@ data class SkillDto(
     val title: String,
     val status: SkillStatusDto,
     @SerialName("isMastered") val isMastered: Boolean? = null,
+    val assessmentAvailable: Boolean = true,
     val materialsAvailable: Boolean = false,
     val learningGoal: String = "",
     val story: String = "",

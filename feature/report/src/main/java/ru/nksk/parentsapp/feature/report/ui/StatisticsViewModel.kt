@@ -107,6 +107,10 @@ class StatisticsViewModel @Inject constructor(
                 state.value = StatisticsUiState(report = report)
             } catch (cancelled: kotlinx.coroutines.CancellationException) {
                 throw cancelled
+            } catch (_: ru.nksk.parentsapp.core.report.data.ReportSnapshotUnavailableException) {
+                if (token == generation) state.update {
+                    it.copy(loading = false, errorRes = R.string.report_snapshot_missing)
+                }
             } catch (_: Exception) {
                 if (token == generation) state.update {
                     it.copy(loading = false, errorRes = R.string.report_load_error)

@@ -73,21 +73,34 @@ re-import. Legacy PIN repositories delegate to the same new singleton store.
 ## Backend and materials
 
 The existing base URL remains `https://fin-api.mortypython.ru/`.
-`GET /api/parents/{petId}` returns the standalone report. Money uses Long;
-statuses include MASTERED, PRACTICING, NO_DATA and HAS_PROBLEM. Assessments are
-not calculated from client counters or `isMastered`.
+The standalone report reads the selected device's synchronized world through
+`POST /v1/profiles/snapshot/download`, then queries real assessments for that
+world's run through `POST /v1/profiles/skills/query`. It no longer calls the
+legacy demo endpoint. The read-only snapshot projection supplies the saved pet
+name, age, fur, accessory, visual state, available money and savings. Bundled
+artwork and its selection rules are copied from the main game.
 
-The existing report payload also supplies `materialsAvailable`, `learningGoal`,
-`story`, `replaceWithParentStory`, `conversationStarters`, `parentTakeaway`,
-`researchBasis` and `researchSources`. The topic screen displays those sections
-without authoring new text. Older/unpublished payloads retain their empty state.
-The standalone client keeps its report API rather than reconstructing gameplay
-history from a snapshot. Its demo badge remains driven by `isDemo`.
+Assessments must have the matching run, supported schema, all 12 skill IDs and
+a history cursor no later than the snapshot. Older assessments carry a visible
+staleness notice; unavailable/invalid assessments are labelled unavailable,
+without inventing mastery. Missing cloud saves show an explicit synchronization
+message rather than substituting a demo pet. No game data is uploaded or changed.
 
-Live verification confirmed that this endpoint still returns demonstration pet
-and assessment values, even though the separate game skills endpoint has real
-assessments. Preserving that hardcoded behavior is part of the user request.
-See [verification](verification/parent-parity-2026-09-29.md).
+Published conversation materials come independently from
+`GET /v1/parent-materials`. Materials or assessment failures do not prevent the
+real pet from loading. The report explains that its data reflects the child's
+last synchronization, and refresh retries all read endpoints.
+
+**PARENT-SOURCES-D-001 — Принято пользователем, 2026-09-29.** Research/source
+links are clickable in both the main game's parent mode and this companion.
+Each `researchSources` URL uses Compose `LinkAnnotation.Url` with an underlined
+primary-color style and system URL handling. Source order and text selection
+for copying are preserved.
+
+**PARENT-REAL-DATA-D-001 — Requested by the user, 2026-09-29.** Replace the
+previously preserved demo data with real synchronized data. This supersedes the
+hardcoded-report exception in PARENT-STANDALONE-D-001. Verification and launch
+on the active emulator are explicitly authorized for this task.
 
 ## Quests
 

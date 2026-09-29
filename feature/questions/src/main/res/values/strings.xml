@@ -16,4 +16,5 @@
     <string name="questions_takeaway">Что важно родителю</string>
     <string name="questions_research">Почему это важно</string>
     <string name="questions_sources">Источники</string>
+    <string name="questions_assessment_unavailable">Оценка недоступна</string>
 </resources>
