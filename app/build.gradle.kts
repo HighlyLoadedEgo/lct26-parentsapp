@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.rustore.appupdate)
     implementation(project(":feature:questions"))
     implementation(project(":feature:quests"))
     implementation(project(":feature:report"))

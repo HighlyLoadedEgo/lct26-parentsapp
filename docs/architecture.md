@@ -98,6 +98,17 @@ game state write, new quest content or persistent demo progress is introduced.
 There is no Create quest action. The old Quests placeholder and QuestStore remain
 for compatibility; the latter does not store the new demo progress.
 
+## Application updates
+
+By PARENT-RUSTORE-D-001 (2026-09-29), `app/updates` ports the child's RuStore
+In-app Updates 10.5.1 FLEXIBLE flow. The app-owned host is mounted only after
+PIN unlock and observes/checks while RESUMED. Its Activity-scoped ViewModel
+survives rotation and report navigation. Background removes the listener and
+requires PIN again before the host resumes. Installation needs explicit user
+confirmation; store failures do not block the report. The Hilt manager uses
+Application Context; neither update state nor SDK objects enter navigation
+keys, PIN storage or the remembered device. See [RuStore updates](rustore-updates.md).
+
 ## Approved scope and verification
 
 **PARENT-STANDALONE-D-001 — Принято пользователем, 2026-09-29.** Bring the
