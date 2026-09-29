@@ -35,48 +35,46 @@ class QuestionTopicViewModel @Inject constructor(
 
     private var loadedSkillId: String? = null
 
+    private var request: kotlinx.coroutines.Job? = null
+    private var generation = 0L
+
     fun load(skillId: String) {
+        if (loadedSkillId != skillId) state.value = QuestionTopicUiState()
         loadedSkillId = skillId
-        viewModelScope.launch {
-            val petId = sessionStore.lastPetId()
-            if (petId == null) {
-                state.update {
-                    it.copy(loading = false, topic = null, errorRes = R.string.questions_load_error)
-                }
-            } else {
-                fetch(petId, skillId)
-            }
-        }
+        refresh()
     }
 
     fun onAction(action: QuestionTopicAction) {
-        when (action) {
-            QuestionTopicAction.Reload -> viewModelScope.launch {
-                val skillId = loadedSkillId
-                val petId = sessionStore.lastPetId()
-                if (skillId != null && petId != null) fetch(petId, skillId)
-            }
-        }
+        when (action) { QuestionTopicAction.Reload -> refresh() }
     }
 
-    private fun fetch(petId: String, skillId: String) {
+    fun cancelRefresh() {
+        generation++
+        request?.cancel()
+        state.update { it.copy(loading = false) }
+    }
+
+    private fun refresh() {
+        val skillId = loadedSkillId ?: return
+        cancelRefresh()
+        val token = generation
         state.update { it.copy(loading = true, errorRes = null) }
-        viewModelScope.launch {
-            runCatching { repository.getReport(petId).skills.find { it.id == skillId } }
-                .onSuccess { found ->
-                    state.update {
-                        it.copy(
-                            loading = false,
-                            topic = found,
-                            errorRes = if (found == null) R.string.questions_load_error else null,
-                        )
-                    }
+        request = viewModelScope.launch {
+            try {
+                val petId = sessionStore.lastPetId() ?: error("No selected profile")
+                val report = repository.getReport(petId)
+                if (token != generation) return@launch
+                require(report.pet.id == petId) { "Report belongs to another device" }
+                val found = report.skills.find { it.id == skillId }
+                state.value = QuestionTopicUiState(topic = found,
+                    errorRes = if (found == null) R.string.questions_load_error else null)
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                if (token == generation) state.update {
+                    it.copy(loading = false, errorRes = R.string.questions_load_error)
                 }
-                .onFailure {
-                    state.update { current ->
-                        current.copy(loading = false, errorRes = R.string.questions_load_error)
-                    }
-                }
+            }
         }
     }
 }

@@ -59,5 +59,14 @@ class PetIdInputViewModelTest {
         assertNull(viewModel.uiState.value.openId)
         assertNull(session.current)
     }
+    @Test
+    fun `android device id is accepted unchanged`() {
+        val session = FakePetSessionStore()
+        val model = PetIdInputViewModel(session)
+        model.onAction(PetIdInputAction.TextChanged("9f1c2d3e4a5b6078"))
+        model.onAction(PetIdInputAction.Submit)
+        assertEquals("9f1c2d3e4a5b6078", model.uiState.value.openId)
+        assertEquals("9f1c2d3e4a5b6078", session.current)
+    }
 }
 

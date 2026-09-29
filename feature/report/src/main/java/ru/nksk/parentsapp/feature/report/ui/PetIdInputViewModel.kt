@@ -55,9 +55,9 @@ class PetIdInputViewModel @Inject constructor(
     }
 
     private companion object {
-        // Canonical UUID with or without dashes, as the backend paths accept both.
+        // Current Android ID and legacy UUID profiles are both supported.
         val PET_ID_REGEX = Regex(
-            pattern = "^[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}$",
+            pattern = "^(?:[0-9a-fA-F]{16}|[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12})$",
         )
     }
 }

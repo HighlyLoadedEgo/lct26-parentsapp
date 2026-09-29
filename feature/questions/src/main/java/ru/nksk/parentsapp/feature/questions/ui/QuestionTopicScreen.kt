@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -43,7 +45,7 @@ fun QuestionTopicScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding(),
+            .safeDrawingPadding(),
     ) {
         Row(
             modifier = Modifier
@@ -64,7 +66,7 @@ fun QuestionTopicScreen(
             )
         }
         when {
-            state.loading -> Column(
+            state.loading && state.topic == null -> Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(24.dp),
@@ -75,7 +77,14 @@ fun QuestionTopicScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
             }
-            state.topic != null -> TopicBody(state.topic)
+            state.topic != null -> Column {
+                if (state.loading) CircularProgressIndicator(Modifier.padding(12.dp))
+                state.errorRes?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(20.dp)) }
+                TextButton(onClick = { onAction(QuestionTopicAction.Reload) }, enabled = !state.loading) {
+                    Text(stringResource(R.string.questions_refresh))
+                }
+                TopicBody(state.topic)
+            }
             state.errorRes != null -> ErrorBody(
                 text = stringResource(state.errorRes),
                 onRetry = { onAction(QuestionTopicAction.Reload) },
@@ -94,9 +103,10 @@ private fun TopicBody(topic: SkillDto) {
     ) {
         val statusLabel = stringResource(
             when (topic.status) {
-                SkillStatusDto.MASTERED -> R.string.questions_status_no_data
+                SkillStatusDto.MASTERED -> R.string.questions_status_mastered
                 SkillStatusDto.PRACTICING -> R.string.questions_status_practicing
                 SkillStatusDto.NO_DATA -> R.string.questions_status_no_data
+                SkillStatusDto.HAS_PROBLEM -> R.string.questions_status_has_problem
             }
         )
         Text(
@@ -108,20 +118,29 @@ private fun TopicBody(topic: SkillDto) {
                 .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                 .padding(horizontal = 12.dp, vertical = 5.dp),
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-                .background(Color.White, RoundedCornerShape(18.dp))
-                .padding(20.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.questions_topic_placeholder),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            )
+        if (topic.materialsAvailable) {
+            MaterialCard(stringResource(R.string.questions_goal), topic.learningGoal)
+            MaterialCard(stringResource(R.string.questions_story), topic.story)
+            MaterialCard(stringResource(R.string.questions_own_story), topic.replaceWithParentStory)
+            MaterialCard(stringResource(R.string.questions_conversation), topic.conversationStarters
+                .mapIndexed { index, question -> "${index + 1}. $question" }.joinToString("\n\n"))
+            MaterialCard(stringResource(R.string.questions_takeaway), topic.parentTakeaway)
+            MaterialCard(stringResource(R.string.questions_research), topic.researchBasis)
+            MaterialCard(stringResource(R.string.questions_sources), topic.researchSources.joinToString("\n\n"))
+        } else {
+            MaterialCard(stringResource(R.string.questions_conversation), stringResource(R.string.questions_topic_placeholder))
+        }
+    }
+}
+
+@Composable
+private fun MaterialCard(title: String, body: String) {
+    SelectionContainer {
+        Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)).padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(body, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

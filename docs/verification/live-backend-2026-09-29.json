@@ -1,0 +1,109 @@
+{
+  "userReport": {
+    "isDemo": true,
+    "skillCount": 12,
+    "materialsCount": 12
+  },
+  "catalogue": {
+    "publicationStatus": "PUBLISHED",
+    "contentVersion": "2026-09-29-v1"
+  },
+  "userCloud": {
+    "available": true,
+    "payloadKind": "CURRENT_WORLD"
+  },
+  "userAssessments": {
+    "status": 200,
+    "skillCount": 12
+  },
+  "syntheticDeviceId": "[synthetic test profile]",
+  "snapshotRoundTripExact": true,
+  "result": "passed",
+  "checkedAtUtc": "2026-09-29T16:33:54.311356+00:00",
+  "checks": [
+    {
+      "name": "User parent report",
+      "method": "GET",
+      "path": "/api/parents/{deviceId}",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "Published materials",
+      "method": "GET",
+      "path": "/v1/parent-materials",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "User cloud snapshot (read only)",
+      "method": "POST",
+      "path": "/v1/profiles/snapshot/download",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "User real assessments (read only)",
+      "method": "POST",
+      "path": "/v1/profiles/skills/query",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "Synthetic profile registration",
+      "method": "POST",
+      "path": "/api/pets",
+      "status": 201,
+      "errorCode": null
+    },
+    {
+      "name": "Idempotent registration retry",
+      "method": "POST",
+      "path": "/api/pets",
+      "status": 201,
+      "errorCode": null
+    },
+    {
+      "name": "Synthetic snapshot upload",
+      "method": "PUT",
+      "path": "/v1/profiles/snapshot",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "Idempotent snapshot retry",
+      "method": "PUT",
+      "path": "/v1/profiles/snapshot",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "Read back persisted snapshot",
+      "method": "POST",
+      "path": "/v1/profiles/snapshot/download",
+      "status": 200,
+      "errorCode": null
+    },
+    {
+      "name": "Changed body with same key is rejected",
+      "method": "PUT",
+      "path": "/v1/profiles/snapshot",
+      "status": 409,
+      "errorCode": "IDEMPOTENCY_CONFLICT"
+    },
+    {
+      "name": "Stale revision is rejected",
+      "method": "PUT",
+      "path": "/v1/profiles/snapshot",
+      "status": 409,
+      "errorCode": "SNAPSHOT_REVISION_CONFLICT"
+    },
+    {
+      "name": "Conflicts preserve saved world",
+      "method": "POST",
+      "path": "/v1/profiles/snapshot/download",
+      "status": 200,
+      "errorCode": null
+    }
+  ]
+}

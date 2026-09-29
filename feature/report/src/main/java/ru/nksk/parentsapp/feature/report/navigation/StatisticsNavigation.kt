@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.SerialName
@@ -28,14 +29,29 @@ fun EntryProviderScope<NavKey>.statisticsEntry(
     onScanQr: (Statistics) -> Unit,
     onManualInput: (Statistics) -> Unit,
     onChangePet: (Statistics) -> Unit,
+    onLinked: (Statistics) -> Unit,
     onOpenTopic: (Statistics, skillId: String, mastered: Boolean) -> Unit,
-    onOpenQuests: (Statistics) -> Unit,
+    questsContent: @Composable (Statistics) -> Unit,
 ) {
     entry<Statistics> { source ->
         val viewModel: StatisticsViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
-        LaunchedEffect(source) {
-            viewModel.load(source.petId)
+        val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+        LaunchedEffect(source, lifecycle) {
+            lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
+                viewModel.load(source.petId)
+                try { kotlinx.coroutines.awaitCancellation() } finally { viewModel.cancelRefresh() }
+            }
+        }
+        // Retire the transient scan argument once it has been durably linked. A restored route
+        // must subsequently read the current session, never re-link an ID that was reset.
+        LaunchedEffect(source, state.report?.pet?.id, lifecycle) {
+            if (source.petId != null && state.report?.pet?.id == source.petId) {
+                lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
+                    onLinked(source)
+                    kotlinx.coroutines.awaitCancellation()
+                }
+            }
         }
         // After a confirmed reset the session is cleared first (resetDone is set only once the
         // clear completes); only then swap the entry so the fresh one reads an empty store.
@@ -53,7 +69,7 @@ fun EntryProviderScope<NavKey>.statisticsEntry(
             onScanQr = dropUnlessResumed { onScanQr(source) },
             onManualInput = dropUnlessResumed { onManualInput(source) },
             onOpenTopic = { skillId, mastered -> onOpenTopic(source, skillId, mastered) },
-            onOpenQuests = dropUnlessResumed { onOpenQuests(source) },
+            questsContent = { questsContent(source) },
         )
     }
 }

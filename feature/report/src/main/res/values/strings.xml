@@ -30,4 +30,7 @@
     <string name="report_manual_field">ID питомца</string>
     <string name="report_manual_open">Открыть отчёт</string>
     <string name="report_invalid_pet_id">Похоже, это не ID питомца. Проверьте символы</string>
+    <string name="report_skill_has_problem">Есть трудности</string>
+    <string name="report_refresh">Обновить отчёт</string>
+    <string name="report_reset_error">Не удалось сбросить ID. Попробуйте ещё раз</string>
 </resources>

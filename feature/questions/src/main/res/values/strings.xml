@@ -3,7 +3,17 @@
     <string name="questions_back">Назад</string>
     <string name="questions_retry">Повторить</string>
     <string name="questions_load_error">Не удалось загрузить тему. Проверьте подключение и попробуйте ещё раз</string>
-    <string name="questions_topic_placeholder">Вопросы по этой теме появятся позже</string>
+    <string name="questions_topic_placeholder">Материалы для разговора пока не опубликованы</string>
     <string name="questions_status_practicing">Тренируется</string>
     <string name="questions_status_no_data">Нет данных</string>
+    <string name="questions_refresh">Обновить</string>
+    <string name="questions_status_mastered">Освоен</string>
+    <string name="questions_status_has_problem">Есть трудности</string>
+    <string name="questions_goal">Чему учится ребёнок</string>
+    <string name="questions_story">История для разговора</string>
+    <string name="questions_own_story">Ваш пример</string>
+    <string name="questions_conversation">Вопросы для разговора</string>
+    <string name="questions_takeaway">Что важно родителю</string>
+    <string name="questions_research">Почему это важно</string>
+    <string name="questions_sources">Источники</string>
 </resources>

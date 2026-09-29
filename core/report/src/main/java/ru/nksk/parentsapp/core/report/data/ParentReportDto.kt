@@ -8,6 +8,7 @@ enum class SkillStatusDto {
     @SerialName("MASTERED") MASTERED,
     @SerialName("PRACTICING") PRACTICING,
     @SerialName("NO_DATA") NO_DATA,
+    @SerialName("HAS_PROBLEM") HAS_PROBLEM,
 }
 
 @Serializable
@@ -22,7 +23,7 @@ data class PetDto(
     val id: String,
     val name: String,
     val temper: String,
-    val balance: Int,
+    val balance: Long,
     @SerialName("selectedLookId") val selectedLookId: String,
     @SerialName("visualState") val visualState: String,
 )
@@ -32,5 +33,13 @@ data class SkillDto(
     val id: String,
     val title: String,
     val status: SkillStatusDto,
-    @SerialName("isMastered") val isMastered: Boolean?,
+    @SerialName("isMastered") val isMastered: Boolean? = null,
+    val materialsAvailable: Boolean = false,
+    val learningGoal: String = "",
+    val story: String = "",
+    val replaceWithParentStory: String = "",
+    val conversationStarters: List<String> = emptyList(),
+    val parentTakeaway: String = "",
+    val researchBasis: String = "",
+    val researchSources: List<String> = emptyList(),
 )

@@ -153,4 +153,15 @@ class AppNavigatorTest {
 
         assertEquals(listOf<NavKey>(statistics), stack)
     }
+    @Test
+    fun linkingReplacesOldReportRootAndIgnoresLateCallbacks() {
+        val scanner = Detail("scanner")
+        val report = Detail("new-report")
+        val stack = mutableListOf<NavKey>(Home, scanner)
+        val navigator = AppNavigator(stack)
+        navigator.resetFrom(scanner, report)
+        navigator.resetFrom(scanner, Detail("late-scan"))
+        navigator.goBack()
+        assertEquals(listOf<NavKey>(report), stack)
+    }
 }

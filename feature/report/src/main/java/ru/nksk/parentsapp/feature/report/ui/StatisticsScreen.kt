@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,6 +54,7 @@ private fun SkillDot(status: SkillStatusDto, modifier: Modifier = Modifier) {
         SkillStatusDto.MASTERED -> MaterialTheme.colorScheme.primary
         SkillStatusDto.PRACTICING -> MaterialTheme.colorScheme.secondary
         SkillStatusDto.NO_DATA -> MaterialTheme.colorScheme.surfaceVariant
+        SkillStatusDto.HAS_PROBLEM -> MaterialTheme.colorScheme.error
     }
     Box(modifier = modifier.size(8.dp).background(color, CircleShape))
 }
@@ -108,6 +109,7 @@ private fun SkillCard(
             SkillStatusDto.MASTERED -> R.string.report_skill_mastered
             SkillStatusDto.PRACTICING -> R.string.report_skill_practicing
             SkillStatusDto.NO_DATA -> R.string.report_skill_no_data
+            SkillStatusDto.HAS_PROBLEM -> R.string.report_skill_has_problem
         }
     )
     Card(
@@ -144,48 +146,6 @@ private fun SkillCard(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-/** Quests section on the parent-mode screen: a framed card with one big lime call-to-action. */
-@Composable
-private fun QuestCard(
-    onOpenQuests: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(28.dp))
-            .padding(20.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.report_quests_title),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Text(
-            text = stringResource(R.string.report_quests_promo),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp),
-        )
-        Button(
-            onClick = onOpenQuests,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(52.dp),
-            shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-        ) {
-            Text(
-                text = stringResource(R.string.report_create_quest),
-                style = MaterialTheme.typography.titleMedium,
             )
         }
     }
@@ -280,7 +240,7 @@ fun StatisticsScreen(
     onScanQr: () -> Unit,
     onManualInput: () -> Unit,
     onOpenTopic: (skillId: String, mastered: Boolean) -> Unit,
-    onOpenQuests: () -> Unit,
+    questsContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showResetDialog by remember { mutableStateOf(false) }
@@ -296,10 +256,10 @@ fun StatisticsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding(),
+            .safeDrawingPadding(),
     ) {
         when {
-            state.loading -> Box(
+            state.resetting || (state.loading && state.report == null) -> Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
@@ -389,7 +349,14 @@ fun StatisticsScreen(
                         )
                     }
                 }
-                    QuestCard(onOpenQuests = onOpenQuests, modifier = Modifier.padding(top = 8.dp))
+                    if (state.loading) {
+                        CircularProgressIndicator(Modifier.padding(top = 16.dp).size(24.dp))
+                    }
+                    state.errorRes?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
+                    TextButton(onClick = { onAction(StatisticsAction.Reload) }, enabled = !state.loading) {
+                        Text(stringResource(R.string.report_refresh))
+                    }
+                    questsContent()
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -458,6 +425,9 @@ fun StatisticsScreen(
                     ),
                 ) {
                     Text(stringResource(R.string.report_retry))
+                }
+                TextButton(onClick = { showResetDialog = true }) {
+                    Text(stringResource(R.string.report_change_pet))
                 }
             }
             else -> EmptyState(
