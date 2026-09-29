@@ -54,7 +54,8 @@ The Activity owns `ParentsAccessViewModel`, which gates the complete navigation
 tree before any restored report can appear. Access exists only in memory. A real
 background transition locks it; rotation retains the ViewModel. A new process
 requires the PIN again. Late verification after background cannot reopen access.
-The secure window flag prevents report/PIN content in screenshots and recents.
+**PARENT-SCREENSHOTS-D-001 — Принято пользователем, 2026-09-29.** Screenshots
+are allowed in the standalone parent app; its Activity does not set `FLAG_SECURE`.
 
 The implementation is ported from the main application's parent mode. Setup
 requires four digits and confirmation. Five wrong attempts impose the same

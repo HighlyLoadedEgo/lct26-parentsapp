@@ -3,7 +3,6 @@ package ru.nksk.parentsapp
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import ru.nksk.parentsapp.feature.pin.access.ParentsAccessViewModel
 import androidx.activity.ComponentActivity
@@ -18,7 +17,6 @@ class MainActivity : ComponentActivity() {
     private val access by lazy { ViewModelProvider(this)[ParentsAccessViewModel::class.java] }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
