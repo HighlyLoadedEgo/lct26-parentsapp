@@ -14,4 +14,8 @@ internal abstract class PinRepositoryModule {
     @Binds
     @Singleton
     internal abstract fun bindPinRepository(impl: PinRepositoryImpl): PinRepository
+    @Binds
+    @Singleton
+    internal abstract fun bindAccessRepository(impl: ru.nksk.parentsapp.feature.pin.access.DataStorePinRepository):
+        ru.nksk.parentsapp.feature.pin.access.PinRepository
 }

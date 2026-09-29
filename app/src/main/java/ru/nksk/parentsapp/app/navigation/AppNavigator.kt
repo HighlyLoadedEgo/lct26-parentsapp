@@ -34,6 +34,11 @@ internal class AppNavigator(private val backStack: MutableList<NavKey>) {
         backStack.add(destination)
     }
 
+    /** Linking/reset replaces the report root, and stale callbacks cannot replace a newer route. */
+    fun resetFrom(source: NavKey, destination: NavKey) {
+        if (backStack.lastOrNull() == source) resetTo(destination)
+    }
+
     /** System Back targets the current stack, independently of an entry callback. */
     fun goBack() {
         // NavDisplay lets the activity handle Back at the root; never empty its stack.

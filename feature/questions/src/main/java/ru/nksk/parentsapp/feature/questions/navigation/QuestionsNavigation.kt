@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.SerialName
@@ -23,8 +24,12 @@ fun EntryProviderScope<NavKey>.questionTopicEntry(
     entry<QuestionTopic> { source ->
         val viewModel: QuestionTopicViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
-        LaunchedEffect(source) {
-            viewModel.load(source.skillId)
+        val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+        LaunchedEffect(source, lifecycle) {
+            lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
+                viewModel.load(source.skillId)
+                try { kotlinx.coroutines.awaitCancellation() } finally { viewModel.cancelRefresh() }
+            }
         }
         QuestionTopicScreen(
             state = state,

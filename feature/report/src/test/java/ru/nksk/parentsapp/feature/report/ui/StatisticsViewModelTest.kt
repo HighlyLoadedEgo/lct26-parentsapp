@@ -96,4 +96,91 @@ class StatisticsViewModelTest {
         assertNull(viewModel.uiState.value.report)
         assertNull(viewModel.uiState.value.errorRes)
     }
+    @Test
+    fun `retry after first failed scan retries scanned id and remembers success`() {
+        val session = FakePetSessionStore()
+        var fails = true
+        val repository = object : ru.nksk.parentsapp.core.report.data.ParentReportRepository {
+            override suspend fun getReport(petId: String): ru.nksk.parentsapp.core.report.data.ParentReportResponse {
+                if (fails) throw java.io.IOException("offline")
+                return FakeReportRepository().getReport(petId)
+            }
+        }
+        val model = StatisticsViewModel(repository, session)
+        model.load("9f1c2d3e4a5b6078")
+        assertNull(session.current)
+        fails = false
+        model.onAction(StatisticsAction.Reload)
+        assertEquals("9f1c2d3e4a5b6078", model.uiState.value.report?.pet?.id)
+        assertEquals("9f1c2d3e4a5b6078", session.current)
+    }
+
+    @Test
+    fun `late scanned response cannot undo a reset`() = kotlinx.coroutines.test.runTest {
+        val response = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val session = FakePetSessionStore()
+        val repository = object : ru.nksk.parentsapp.core.report.data.ParentReportRepository {
+            override suspend fun getReport(petId: String): ru.nksk.parentsapp.core.report.data.ParentReportResponse {
+                kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { response.await() }
+                return FakeReportRepository().getReport(petId)
+            }
+        }
+        val model = StatisticsViewModel(repository, session)
+        model.load("9f1c2d3e4a5b6078")
+        model.onAction(StatisticsAction.ChangePet)
+        response.complete(Unit)
+        assertNull(session.current)
+        assertNull(model.uiState.value.report)
+    }
+
+    @Test
+    fun `refresh failure retains last report and exposes error`() {
+        var fails = false
+        val session = FakePetSessionStore().apply { current = "9f1c2d3e4a5b6078" }
+        val repository = object : ru.nksk.parentsapp.core.report.data.ParentReportRepository {
+            override suspend fun getReport(petId: String): ru.nksk.parentsapp.core.report.data.ParentReportResponse {
+                if (fails) throw java.io.IOException("offline")
+                return FakeReportRepository().getReport(petId)
+            }
+        }
+        val model = StatisticsViewModel(repository, session)
+        model.load(null)
+        fails = true
+        model.onAction(StatisticsAction.Reload)
+        assertEquals("9f1c2d3e4a5b6078", model.uiState.value.report?.pet?.id)
+        assertEquals(R.string.report_load_error, model.uiState.value.errorRes)
+    }
+    @Test
+    fun `returning to report observes cleared or changed session`() {
+        val session = FakePetSessionStore().apply { current = "first" }
+        val model = StatisticsViewModel(FakeReportRepository(), session)
+        model.load(null)
+        session.current = "second"
+        model.load(null)
+        assertEquals("second", model.uiState.value.report?.pet?.id)
+        session.current = null
+        model.load(null)
+        assertNull(model.uiState.value.report)
+    }
+    @Test
+    fun `background cancellation of refresh does not cancel a confirmed reset`() = kotlinx.coroutines.test.runTest {
+        val completion = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val backing = FakePetSessionStore().apply { current = "device" }
+        val session = object : ru.nksk.parentsapp.core.report.data.PetSessionStore by backing {
+            override suspend fun clearPetId() {
+                completion.await()
+                backing.clearPetId()
+            }
+        }
+        val model = StatisticsViewModel(FakeReportRepository(), session)
+        model.load(null)
+        model.onAction(StatisticsAction.ChangePet)
+        assertTrue(model.uiState.value.resetting)
+        model.cancelRefresh()
+        model.onAction(StatisticsAction.Reload)
+        completion.complete(Unit)
+        assertNull(backing.current)
+        assertNull(model.uiState.value.report)
+        assertTrue(model.uiState.value.resetDone)
+    }
 }

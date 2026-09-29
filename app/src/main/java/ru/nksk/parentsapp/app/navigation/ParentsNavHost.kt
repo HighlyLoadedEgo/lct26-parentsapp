@@ -16,6 +16,9 @@ import ru.nksk.parentsapp.feature.pin.navigation.pinLockEntry
 import ru.nksk.parentsapp.feature.pin.navigation.pinSetupEntry
 import ru.nksk.parentsapp.feature.questions.navigation.QuestionTopic
 import ru.nksk.parentsapp.feature.questions.navigation.questionTopicEntry
+import ru.nksk.parentsapp.feature.quests.navigation.Quest
+import ru.nksk.parentsapp.feature.quests.navigation.questEntry
+import ru.nksk.parentsapp.feature.quests.ui.ParentQuestCards
 import ru.nksk.parentsapp.feature.quests.navigation.Quests
 import ru.nksk.parentsapp.feature.quests.navigation.questsEntry
 import ru.nksk.parentsapp.feature.report.navigation.PetIdInput
@@ -47,25 +50,27 @@ fun ParentsNavHost(
             statisticsEntry(
                 onScanQr = { source -> navigator.navigate(source, Scanner) },
                 onManualInput = { source -> navigator.navigate(source, PetIdInput) },
-                onChangePet = { source -> navigator.replace(source, Statistics()) },
+                onChangePet = { source -> navigator.resetFrom(source, Statistics()) },
+                onLinked = { source -> navigator.resetFrom(source, Statistics()) },
                 onOpenTopic = { source, skillId, _ ->
                     // The report feature stays route-agnostic: the host picks the destination.
                     navigator.navigate(source, QuestionTopic(skillId))
                 },
-                onOpenQuests = { source -> navigator.navigate(source, Quests) },
+                questsContent = { source -> ParentQuestCards { quest -> navigator.navigate(source, Quest(quest)) } },
             )
             petIdInputEntry(
                 onBack = navigator::goBack,
-                onOpen = { source, petId -> navigator.replace(source, Statistics()) },
+                onOpen = { source, _ -> navigator.resetFrom(source, Statistics()) },
             )
             scannerEntry(
                 onScanned = { source, value ->
-                    navigator.replace(source, Statistics(petId = value))
+                    navigator.resetFrom(source, Statistics(petId = value))
                 },
                 onBack = navigator::goBack,
             )
             questionTopicEntry(onBack = navigator::goBack)
             questsEntry(onBack = navigator::goBack)
+            questEntry(onBack = navigator::goBack)
         },
     )
 }

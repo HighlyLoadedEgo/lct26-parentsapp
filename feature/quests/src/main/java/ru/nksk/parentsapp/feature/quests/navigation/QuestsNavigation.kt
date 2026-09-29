@@ -17,3 +17,16 @@ fun EntryProviderScope<NavKey>.questsEntry(onBack: (Quests) -> Unit) {
         QuestsScreen(onBack = dropUnlessResumed { onBack(source) })
     }
 }
+
+@Serializable
+@SerialName("parent_quest")
+data class Quest(val quest: ru.nksk.parentsapp.feature.quests.ui.ParentQuest) : NavKey
+
+fun EntryProviderScope<NavKey>.questEntry(onBack: (Quest) -> Unit) {
+    entry<Quest> { source ->
+        ru.nksk.parentsapp.feature.quests.ui.ParentQuestEntry(
+            quest = source.quest,
+            onBack = { onBack(source) },
+        )
+    }
+}

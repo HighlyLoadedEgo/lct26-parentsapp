@@ -1,6 +1,8 @@
 package ru.nksk.parentsapp.core.report.data
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -25,24 +27,23 @@ interface PetSessionStore {
 private val Context.reportDataStore by preferencesDataStore(name = "report_store")
 
 @Singleton
-class PetSessionStoreImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : PetSessionStore {
+class PetSessionStoreImpl internal constructor(private val store: DataStore<Preferences>) : PetSessionStore {
+    @Inject constructor(@ApplicationContext context: Context) : this(context.reportDataStore)
     private companion object {
         val LAST_PET_ID = stringPreferencesKey("last_pet_id")
     }
 
     override suspend fun lastPetId(): String? =
-        context.reportDataStore.data.first()[LAST_PET_ID]
+        store.data.first()[LAST_PET_ID]
 
     override fun observePetId(): Flow<String?> =
-        context.reportDataStore.data.map { preferences -> preferences[LAST_PET_ID] }
+        store.data.map { preferences -> preferences[LAST_PET_ID] }
 
     override suspend fun savePetId(petId: String) {
-        context.reportDataStore.edit { it[LAST_PET_ID] = petId }
+        store.edit { it[LAST_PET_ID] = petId }
     }
 
     override suspend fun clearPetId() {
-        context.reportDataStore.edit { it.remove(LAST_PET_ID) }
+        store.edit { it.remove(LAST_PET_ID) }
     }
 }

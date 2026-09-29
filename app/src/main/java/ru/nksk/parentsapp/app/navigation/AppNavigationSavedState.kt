@@ -7,6 +7,7 @@ import kotlinx.serialization.modules.polymorphic
 import ru.nksk.parentsapp.feature.pin.navigation.PinLock
 import ru.nksk.parentsapp.feature.pin.navigation.PinSetup
 import ru.nksk.parentsapp.feature.questions.navigation.QuestionTopic
+import ru.nksk.parentsapp.feature.quests.navigation.Quest
 import ru.nksk.parentsapp.feature.quests.navigation.Quests
 import ru.nksk.parentsapp.feature.report.navigation.PetIdInput
 import ru.nksk.parentsapp.feature.report.navigation.Statistics
@@ -19,6 +20,7 @@ internal val ParentsNavigationSavedStateConfiguration = SavedStateConfiguration 
             subclass(Statistics::class, Statistics.serializer())
             subclass(QuestionTopic::class, QuestionTopic.serializer())
             subclass(Quests::class, Quests.serializer())
+            subclass(Quest::class, Quest.serializer())
             subclass(PinSetup::class, PinSetup.serializer())
             subclass(PinLock::class, PinLock.serializer())
             subclass(PetIdInput::class, PetIdInput.serializer())
