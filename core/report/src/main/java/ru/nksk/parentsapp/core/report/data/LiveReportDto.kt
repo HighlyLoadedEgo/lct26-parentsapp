@@ -17,7 +17,15 @@ data class ReportSkillsResponse(
     val schemaVersion: Int = 1,
 )
 @Serializable
-data class ReportAssessmentDto(val skillId: String, val status: SkillStatusDto, val policyVersion: String)
+data class ReportAssessmentDto(
+    val skillId: String, val status: SkillStatusDto, val policyVersion: String,
+    @Serializable(with = OptionalSkillExplanationSerializer::class)
+    val explanation: SkillExplanationDto? = null,
+    @Serializable(with = OptionalAssessmentReasonSerializer::class)
+    val assessmentReason: String? = null,
+    @Serializable(with = OptionalObservationCountsSerializer::class)
+    val observationCounts: ObservationCountsDto? = null,
+)
 @Serializable
 data class ReportMaterialsResponse(
     val contentVersion: String, val skills: List<ReportMaterialDto>, val schemaVersion: Int = 1,

@@ -82,8 +82,10 @@ name, age, fur, accessory, visual state, available money and savings. Bundled
 artwork and its selection rules are copied from the main game.
 
 Assessments must have the matching run, supported schema, all 12 skill IDs and
-a history cursor no later than the snapshot. Older assessments carry a visible
-staleness notice; unavailable/invalid assessments are labelled unavailable,
+a nonnegative history cursor. Same-run assessments may be newer than the
+snapshot because the game can upload analytics independently. `snapshotStale`
+then warns that pet data may lag; older assessments carry `assessmentsStale`.
+Both notices survive refresh failures; unavailable/invalid assessments are labelled unavailable,
 without inventing mastery. Missing cloud saves show an explicit synchronization
 message rather than substituting a demo pet. No game data is uploaded or changed.
 
@@ -161,3 +163,31 @@ Android lint. No app/emulator or connected/instrumented test was launched.
 DataStore tests use real on-disk stores to verify selected-ID reopen/reset and
 legacy PIN migration/reopen. Live writes use a separate synthetic profile;
 the user's device is probed read-only. No Room or WorkManager is introduced.
+
+
+## Skill explanations — 2026-10-19
+
+`ReportAssessmentDto` reads the optional version-1 explanation from the main
+application contract and the independent server `assessmentReason`. Invalid
+optional display blocks are discarded without losing the valid assessment.
+The repository preserves their server history boundary and the topic ViewModel
+carries the report staleness notice through failed refreshes. Topic details
+show one skill description (falling back to the published learning goal),
+recorded examples, the server reason, conversation materials, practical parent
+support and methodology immediately before clickable sources. The companion
+never computes mastery thresholds or invents explanations from the snapshot.
+
+
+## Numerical observations — 2026-10-19
+
+Optional server `observationCounts` travels from each assessment into its skill.
+When present, all nine counters must be nonnegative JSON integers; missing,
+null or malformed blocks remain unavailable without hiding valid status or
+explanations. No count or mastery is inferred from the saved world. The topic
+shows “Ситуации в текущей игре” after meaning and before narrative explanations and
+assessmentReason, matching the child's parent mode. Zero observed episodes
+has an explicit empty state; absent counters never appear as zero. Existing
+story, conversation and research sections retain their order and theme.
+
+Parent-facing skill titles and topic labels follow the child application’s
+current main wording (6a3a07f), including the shorter FIN-01–FIN-12 names.

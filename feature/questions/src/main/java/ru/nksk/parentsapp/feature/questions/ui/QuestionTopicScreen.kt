@@ -41,7 +41,7 @@ import ru.nksk.parentsapp.core.report.data.SkillDto
 import ru.nksk.parentsapp.core.report.data.SkillStatusDto
 import ru.nksk.parentsapp.feature.questions.R
 
-/** Practice screen for one unmastered topic; content awaits a backend endpoint. */
+/** Skill meaning, synchronized evidence and published conversation materials. */
 @Composable
 fun QuestionTopicScreen(
     state: QuestionTopicUiState,
@@ -90,7 +90,7 @@ fun QuestionTopicScreen(
                 TextButton(onClick = { onAction(QuestionTopicAction.Reload) }, enabled = !state.loading) {
                     Text(stringResource(R.string.questions_refresh))
                 }
-                TopicBody(state.topic)
+                TopicBody(state.topic, state.assessmentsStale, state.snapshotStale)
             }
             state.errorRes != null -> ErrorBody(
                 text = stringResource(state.errorRes),
@@ -101,7 +101,7 @@ fun QuestionTopicScreen(
 }
 
 @Composable
-private fun TopicBody(topic: SkillDto) {
+private fun TopicBody(topic: SkillDto, assessmentsStale: Boolean, snapshotStale: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -125,8 +125,25 @@ private fun TopicBody(topic: SkillDto) {
                 .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                 .padding(horizontal = 12.dp, vertical = 5.dp),
         )
+        if (assessmentsStale) {
+            Text(stringResource(R.string.questions_assessment_stale),
+                style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 12.dp))
+        }
+        if (snapshotStale) {
+            Text(stringResource(R.string.questions_snapshot_stale),
+                style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 12.dp))
+        }
+        val explanation = topic.explanation.takeIf { topic.assessmentAvailable }
+        val description = explanation?.description ?: topic.learningGoal
+        if (description.isNotBlank()) MaterialCard(stringResource(R.string.questions_meaning), description)
+        ObservationCountsCard(topic.observationCounts.takeIf { topic.assessmentAvailable })
+        val paragraphs = explanation?.let { explanationParagraphs(it.summary, it.evidence.map { item -> item.text }) }
+        MaterialCard(stringResource(R.string.questions_observed),
+            paragraphs?.joinToString("\n\n") ?: stringResource(R.string.questions_explanation_missing))
+        MaterialCard(stringResource(R.string.questions_assessment_reason),
+            topic.assessmentReason.takeIf { topic.assessmentAvailable }
+                ?: stringResource(R.string.questions_reason_missing))
         if (topic.materialsAvailable) {
-            MaterialCard(stringResource(R.string.questions_goal), topic.learningGoal)
             MaterialCard(stringResource(R.string.questions_story), topic.story)
             MaterialCard(stringResource(R.string.questions_own_story), topic.replaceWithParentStory)
             MaterialCard(stringResource(R.string.questions_conversation), topic.conversationStarters
@@ -138,6 +155,24 @@ private fun TopicBody(topic: SkillDto) {
             MaterialCard(stringResource(R.string.questions_conversation), stringResource(R.string.questions_topic_placeholder))
         }
     }
+}
+
+@Composable
+private fun ObservationCountsCard(counts: ru.nksk.parentsapp.core.report.data.ObservationCountsDto?) {
+    val body = when {
+        counts == null -> stringResource(R.string.questions_observations_unavailable)
+        counts.observedEpisodes == 0 -> stringResource(R.string.questions_observations_empty)
+        else -> buildList {
+            add(stringResource(R.string.questions_count_supported, counts.supportedEpisodes))
+            add(stringResource(R.string.questions_count_difficulty, counts.difficultyEpisodes))
+            add(stringResource(R.string.questions_count_neutral, counts.neutralEpisodes))
+            add(stringResource(R.string.questions_count_incomplete, counts.incompleteEpisodes))
+            if (counts.pendingEpisodes > 0) add(stringResource(R.string.questions_count_pending, counts.pendingEpisodes))
+            add(stringResource(R.string.questions_count_without_hints, counts.supportedWithoutGameHints))
+            add(stringResource(R.string.questions_count_assisted, counts.assistedEpisodes))
+        }.joinToString("\n\n")
+    }
+    MaterialCard(stringResource(R.string.questions_observations_title), body)
 }
 
 @Composable
@@ -199,3 +234,8 @@ private fun ErrorBody(text: String, onRetry: () -> Unit) {
         }
     }
 }
+
+/** Only literal repetition is removed; different recorded events remain distinct. */
+internal fun explanationParagraphs(summary: String, evidence: List<String>): List<String> =
+    (listOf(summary) + evidence).map(String::trim).filter(String::isNotBlank)
+        .distinctBy { it.replace(Regex("\\s+"), " ") }.take(3)

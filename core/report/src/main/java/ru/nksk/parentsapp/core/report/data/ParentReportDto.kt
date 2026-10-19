@@ -19,6 +19,7 @@ data class ParentReportResponse(
     val assessmentsAvailable: Boolean = true,
     val assessmentsStale: Boolean = false,
     val materialsLoadFailed: Boolean = false,
+    val snapshotStale: Boolean = false,
 )
 
 @Serializable
@@ -50,4 +51,10 @@ data class SkillDto(
     val parentTakeaway: String = "",
     val researchBasis: String = "",
     val researchSources: List<String> = emptyList(),
+    @Serializable(with = OptionalSkillExplanationSerializer::class)
+    val explanation: SkillExplanationDto? = null,
+    @Serializable(with = OptionalAssessmentReasonSerializer::class)
+    val assessmentReason: String? = null,
+    @Serializable(with = OptionalObservationCountsSerializer::class)
+    val observationCounts: ObservationCountsDto? = null,
 )

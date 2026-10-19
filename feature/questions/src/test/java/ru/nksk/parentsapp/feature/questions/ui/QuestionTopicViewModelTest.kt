@@ -64,4 +64,64 @@ class QuestionTopicViewModelTest {
         assertEquals("FIN-04", model.uiState.value.topic?.id)
         assertNull(model.uiState.value.errorRes)
     }
+
+    @Test fun staleAssessmentAndExplanationSurviveFailedRefreshWithoutMaterials() = runTest {
+        val skill = ru.nksk.parentsapp.core.report.data.SkillDto(
+            "FIN-01", "Сравнивает суммы", ru.nksk.parentsapp.core.report.data.SkillStatusDto.MASTERED,
+            explanation = ru.nksk.parentsapp.core.report.data.SkillExplanationDto(
+                description = "Сравнивает суммы", summary = "Два успеха", evidence = emptyList()),
+            assessmentReason = "Два завершённых успеха",
+        )
+        var fail = false
+        val repository = object : ru.nksk.parentsapp.core.report.data.ParentReportRepository {
+            override suspend fun getReport(petId: String): ru.nksk.parentsapp.core.report.data.ParentReportResponse {
+                if (fail) throw java.io.IOException("offline")
+                return ru.nksk.parentsapp.core.report.data.ParentReportResponse(
+                    ru.nksk.parentsapp.core.report.data.PetDto(petId, "Лис", "", 0, "", ""),
+                    listOf(skill), false, assessmentsStale = true,
+                )
+            }
+        }
+        val model = QuestionTopicViewModel(repository, FakePetSessionStore().apply { current = "abc123" })
+        model.load("FIN-01")
+        advanceUntilIdle()
+        assertEquals(skill, model.uiState.value.topic)
+        assertEquals(true, model.uiState.value.assessmentsStale)
+        fail = true
+        model.onAction(QuestionTopicAction.Reload)
+        advanceUntilIdle()
+        assertEquals(skill, model.uiState.value.topic)
+        assertEquals(true, model.uiState.value.assessmentsStale)
+        assertNotNull(model.uiState.value.errorRes)
+    }
+
+    @Test fun newerAssessmentSnapshotNoticeSurvivesFailedRefresh() = runTest {
+        var fail = false
+        val repository = object : ru.nksk.parentsapp.core.report.data.ParentReportRepository {
+            override suspend fun getReport(petId: String): ru.nksk.parentsapp.core.report.data.ParentReportResponse {
+                if (fail) throw java.io.IOException("offline")
+                return ru.nksk.parentsapp.core.report.data.ParentReportResponse(
+                    ru.nksk.parentsapp.core.report.data.PetDto(petId, "Лис", "", 0, "", ""),
+                    listOf(ru.nksk.parentsapp.core.report.data.SkillDto("FIN-01", "Суммы",
+                        ru.nksk.parentsapp.core.report.data.SkillStatusDto.PRACTICING)), false, snapshotStale = true)
+            }
+        }
+        val model = QuestionTopicViewModel(repository, FakePetSessionStore().apply { current = "abc123" })
+        model.load("FIN-01")
+        advanceUntilIdle()
+        assertEquals(true, model.uiState.value.snapshotStale)
+        assertEquals(false, model.uiState.value.assessmentsStale)
+        fail = true
+        model.onAction(QuestionTopicAction.Reload)
+        advanceUntilIdle()
+        assertEquals(true, model.uiState.value.snapshotStale)
+        assertNotNull(model.uiState.value.topic)
+        assertNotNull(model.uiState.value.errorRes)
+    }
+
+    @Test fun paragraphsRemoveLiteralDuplicatesButKeepDifferentEvents() {
+        assertEquals(listOf("Верно сравнил суммы.", "День 2: верно выбрал", "День 3: верно выбрал"),
+            explanationParagraphs("Верно сравнил суммы.", listOf(
+                "Верно  сравнил суммы.", "День 2: верно выбрал", "День 3: верно выбрал", " ")))
+    }
 }
