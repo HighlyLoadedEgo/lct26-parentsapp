@@ -179,10 +179,19 @@ class RemoteParentQuestRewardsRepositoryTest {
 
     private class FakeSession : PetSessionStore {
         val id = MutableStateFlow<String?>("device")
+        private val pets = MutableStateFlow(listOf(ru.nksk.parentsapp.core.report.data.LinkedPet("device")))
         override suspend fun lastPetId() = id.value
         override fun observePetId() = id
         override suspend fun savePetId(petId: String) { id.value = petId }
-        override suspend fun clearPetId() { id.value = null }
+        override suspend fun clearPetId() { id.value = null; pets.value = emptyList() }
+        override fun observePets() = pets
+        override suspend fun removePet(petId: String) {
+            pets.value = pets.value.filterNot { it.petId == petId }
+            if (id.value == petId) id.value = pets.value.firstOrNull()?.petId
+        }
+        override suspend fun renamePet(petId: String, name: String) {
+            pets.value = pets.value.map { if (it.petId == petId) it.copy(name = name) else it }
+        }
     }
 
     private fun httpError(status: Int, code: String) = HttpException(Response.error<Any>(status,

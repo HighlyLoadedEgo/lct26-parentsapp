@@ -17,6 +17,8 @@ import ru.nksk.parentsapp.feature.questions.R
 data class QuestionTopicUiState(
     val loading: Boolean = false,
     val topic: SkillDto? = null,
+    val assessmentsStale: Boolean = false,
+    val snapshotStale: Boolean = false,
     @StringRes val errorRes: Int? = null,
 )
 
@@ -66,7 +68,8 @@ class QuestionTopicViewModel @Inject constructor(
                 if (token != generation) return@launch
                 require(report.pet.id == petId) { "Report belongs to another device" }
                 val found = report.skills.find { it.id == skillId }
-                state.value = QuestionTopicUiState(topic = found,
+                state.value = QuestionTopicUiState(topic = found, assessmentsStale = report.assessmentsStale,
+                    snapshotStale = report.snapshotStale,
                     errorRes = if (found == null) R.string.questions_load_error else null)
             } catch (cancelled: kotlinx.coroutines.CancellationException) {
                 throw cancelled

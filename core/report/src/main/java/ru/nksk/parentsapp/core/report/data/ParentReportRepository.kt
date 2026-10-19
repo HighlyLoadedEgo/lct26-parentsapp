@@ -40,7 +40,7 @@ class ParentReportRepositoryImpl @Inject constructor(
             optional {
                 api.getSkills(ReportSkillsRequest(petId, world.runId)).also {
                     require(it.schemaVersion == 1 && it.gameRunId == world.runId)
-                    require(it.basedOnHistorySequence in 0..world.historySequence)
+                    require(it.basedOnHistorySequence >= 0)
                     require(it.skills.size == titles.size && it.skills.map { skill -> skill.skillId }.toSet() == titles.keys)
                     require(it.skills.all { skill -> skill.policyVersion.isNotBlank() })
                 }
@@ -66,6 +66,9 @@ class ParentReportRepositoryImpl @Inject constructor(
                 val material = topics[id]
                 SkillDto(id, title, bySkill[id]?.status ?: SkillStatusDto.NO_DATA,
                     assessmentAvailable = bySkill[id] != null,
+                    explanation = bySkill[id]?.explanation,
+                    assessmentReason = bySkill[id]?.assessmentReason,
+                    observationCounts = bySkill[id]?.observationCounts,
                     materialsAvailable = material != null,
                     learningGoal = material?.learningGoal.orEmpty(), story = material?.story.orEmpty(),
                     replaceWithParentStory = material?.replaceWithParentStory.orEmpty(),
@@ -77,6 +80,7 @@ class ParentReportRepositoryImpl @Inject constructor(
             assessmentsAvailable = assessments != null,
             assessmentsStale = assessments != null && assessments.basedOnHistorySequence < world.historySequence,
             materialsLoadFailed = materials == null,
+            snapshotStale = assessments != null && assessments.basedOnHistorySequence > world.historySequence,
         )
     }
 }
@@ -91,16 +95,16 @@ private suspend fun <T> optional(block: suspend () -> T): T? = try {
 
 /** Same parent-facing skill names as the main application; assessment policy belongs to the server. */
 private val titles = linkedMapOf(
-    "FIN-01" to "Сравнивает денежные суммы",
-    "FIN-02" to "Планирует бюджет на период",
-    "FIN-03" to "Учитывает обязательные нужды перед желаниями",
-    "FIN-04" to "Следит, чтобы денег хватало до следующего дохода",
-    "FIN-05" to "Последовательно собирает на выбранную цель",
-    "FIN-06" to "Откладывает желанную покупку ради приоритета",
-    "FIN-07" to "Создаёт запас на непредвиденные расходы",
-    "FIN-08" to "Перестраивает действия после неожиданной траты",
-    "FIN-09" to "Сопоставляет денежные и другие затраты",
-    "FIN-10" to "Планирует дополнительный заработок",
-    "FIN-11" to "Разбирает финансовые последствия и меняет решение",
-    "FIN-12" to "Понимает свои доходы и расходы",
+    "FIN-01" to "Сравнивает суммы",
+    "FIN-02" to "Планирует траты",
+    "FIN-03" to "Оставляет деньги на необходимое",
+    "FIN-04" to "Рассчитывает деньги до следующего дохода",
+    "FIN-05" to "Копит на цель",
+    "FIN-06" to "Откладывает покупку ради цели",
+    "FIN-07" to "Оставляет запас на неожиданное",
+    "FIN-08" to "Меняет план после неожиданной траты",
+    "FIN-09" to "Учитывает деньги, силы и время",
+    "FIN-10" to "Планирует заработок",
+    "FIN-11" to "Учится на своих решениях",
+    "FIN-12" to "Различает доходы, расходы и переводы",
 )

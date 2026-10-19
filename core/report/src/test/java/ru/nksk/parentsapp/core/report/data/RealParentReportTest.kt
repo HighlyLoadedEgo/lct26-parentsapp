@@ -18,6 +18,7 @@ class RealParentReportTest {
     private var snapshotStatus = 200
     private var skillsStatus = 200
     private var materialsStatus = 200
+    private var skillsExtra = ""
     private var sequence = 7L
     private var payloadKind: String? = "CURRENT_WORLD"
     private val requests = mutableListOf<String>()
@@ -36,7 +37,7 @@ class RealParentReportTest {
                 }
                 "/v1/profiles/skills/query" -> {
                     check(body.contains("device-1") && body.contains("run-1"))
-                    skillsStatus to """{"gameRunId":"$runId","basedOnHistorySequence":$sequence,"schemaVersion":1,"skills":[${(1..12).joinToString { """{"skillId":"FIN-${it.toString().padStart(2, '0')}","status":"HAS_PROBLEM","policyVersion":"real-v1"}""" }}]}"""
+                    skillsStatus to """{"gameRunId":"$runId","basedOnHistorySequence":$sequence,"schemaVersion":1,"skills":[${(1..12).joinToString { """{"skillId":"FIN-${it.toString().padStart(2, '0')}","status":"HAS_PROBLEM","policyVersion":"real-v1"$skillsExtra}""" }}]}"""
                 }
                 "/v1/parent-materials" -> materialsStatus to """{"schemaVersion":1,"publicationStatus":"PUBLISHED","contentVersion":"v1","skills":[{"skillId":"FIN-01","learningGoal":"Цель","story":"История","replaceWithParentStory":"Пример","conversationStarters":["Вопрос"],"parentTakeaway":"Вывод","researchBasis":"Основание","researchSources":["https://example.org"]}]}"""
                 else -> 200 to """{"pet":{"id":"device-1","name":"Демо","temper":"Демо","balance":10,"selectedLookId":"PLAIN","visualState":"NORMAL"},"skills":[],"isDemo":true}"""
@@ -54,6 +55,23 @@ class RealParentReportTest {
     }
 
     @After fun close() = server.stop(0)
+
+    @Test fun `server explanation and reason keep their boundary without materials`() = runTest {
+        sequence = 5
+        materialsStatus = 503
+        skillsExtra = """, "assessmentReason":"Два успеха", "explanation":{"version":1,"description":"Сравнение сумм","summary":"Верно сравнил","evidence":[]}"""
+        val report = repository.getReport("device-1")
+        assertTrue(report.assessmentsStale)
+        val skill = report.skills.first()
+        assertEquals("Сравнение сумм", skill.explanation?.description)
+        assertEquals("Два успеха", skill.assessmentReason)
+        assertFalse(skill.materialsAvailable)
+        skillsExtra = ""
+        val updated = repository.getReport("device-1").skills.first()
+        assertNull(updated.explanation)
+        assertNull(updated.assessmentReason)
+        assertTrue(updated.assessmentAvailable)
+    }
 
     @Test fun `report uses saved pet money and real server assessments`() = runTest {
         val report = repository.getReport("device-1")
@@ -86,9 +104,12 @@ class RealParentReportTest {
         assertFalse(repository.getReport("device-1").assessmentsAvailable)
     }
 
-    @Test fun `assessments ahead of snapshot are not combined with old world`() = runTest {
+    @Test fun `same run assessments ahead of snapshot stay available with snapshot notice`() = runTest {
         sequence = 8
-        assertFalse(repository.getReport("device-1").assessmentsAvailable)
+        val report = repository.getReport("device-1")
+        assertTrue(report.assessmentsAvailable)
+        assertTrue(report.snapshotStale)
+        assertFalse(report.assessmentsStale)
     }
 
     @Test fun `older assessments are marked stale`() = runTest {
@@ -110,5 +131,23 @@ class RealParentReportTest {
         world = world.replace("\"worldFormatVersion\":1", "\"formatVersion\":5")
         assertEquals("Лисёнок", repository.getReport("device-1").pet.name)
     }
+
+    @Test fun `observation counters are mapped and absent counters remain unavailable`() = runTest {
+        skillsExtra = ",\"observationCounts\":" + countsJson
+        val skill = repository.getReport("device-1").skills.first()
+        assertEquals(5, skill.observationCounts?.supportedEpisodes)
+        assertEquals(1, skill.observationCounts?.difficultyEpisodes)
+        assertEquals(5, skill.observationCounts?.supportedWithoutGameHints)
+        assertEquals(SkillStatusDto.HAS_PROBLEM, skill.status)
+        skillsExtra = ""
+        assertNull(repository.getReport("device-1").skills.first().observationCounts)
+    }
+
+    @Test fun `negative cursor remains unavailable`() = runTest {
+        sequence = -1
+        assertFalse(repository.getReport("device-1").assessmentsAvailable)
+    }
+
+    private val countsJson = """{"observedEpisodes":6,"completedEpisodes":6,"supportedEpisodes":5,"difficultyEpisodes":1,"neutralEpisodes":0,"pendingEpisodes":0,"incompleteEpisodes":0,"supportedWithoutGameHints":5,"assistedEpisodes":1}"""
 
 }
