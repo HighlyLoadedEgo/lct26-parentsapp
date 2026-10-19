@@ -26,11 +26,11 @@
     <string name="questions_observations_title">Ситуации в текущей игре</string>
     <string name="questions_observations_unavailable">Числа по игровым ситуациям пока не дошли.</string>
     <string name="questions_observations_empty">В этой игре пока мало примеров по теме. Это не значит, что ребёнок не умеет так делать.</string>
-    <string name="questions_count_supported">Получилось: %1$d</string>
-    <string name="questions_count_difficulty">Возникли трудности: %1$d</string>
-    <string name="questions_count_neutral">Без однозначного вывода: %1$d</string>
-    <string name="questions_count_incomplete">Не хватает сведений: %1$d</string>
-    <string name="questions_count_pending">Ещё не завершено: %1$d</string>
-    <string name="questions_count_without_hints">Получилось без подсказки: %1$d</string>
-    <string name="questions_count_assisted">С подсказкой или помощью: %1$d</string>
+    <string name="questions_label_supported">Получилось</string>
+    <string name="questions_label_difficulty">Возникли трудности</string>
+    <string name="questions_label_neutral">Без однозначного вывода</string>
+    <string name="questions_label_incomplete">Не хватает сведений</string>
+    <string name="questions_label_pending">Ещё не завершено</string>
+    <string name="questions_label_without_hints">Получилось без подсказки</string>
+    <string name="questions_label_assisted">С подсказкой или помощью</string>
 </resources>

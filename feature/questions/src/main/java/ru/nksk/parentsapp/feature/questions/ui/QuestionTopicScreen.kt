@@ -159,20 +159,49 @@ private fun TopicBody(topic: SkillDto, assessmentsStale: Boolean, snapshotStale:
 
 @Composable
 private fun ObservationCountsCard(counts: ru.nksk.parentsapp.core.report.data.ObservationCountsDto?) {
-    val body = when {
-        counts == null -> stringResource(R.string.questions_observations_unavailable)
-        counts.observedEpisodes == 0 -> stringResource(R.string.questions_observations_empty)
-        else -> buildList {
-            add(stringResource(R.string.questions_count_supported, counts.supportedEpisodes))
-            add(stringResource(R.string.questions_count_difficulty, counts.difficultyEpisodes))
-            add(stringResource(R.string.questions_count_neutral, counts.neutralEpisodes))
-            add(stringResource(R.string.questions_count_incomplete, counts.incompleteEpisodes))
-            if (counts.pendingEpisodes > 0) add(stringResource(R.string.questions_count_pending, counts.pendingEpisodes))
-            add(stringResource(R.string.questions_count_without_hints, counts.supportedWithoutGameHints))
-            add(stringResource(R.string.questions_count_assisted, counts.assistedEpisodes))
-        }.joinToString("\n\n")
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)).padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(stringResource(R.string.questions_observations_title), style = MaterialTheme.typography.titleMedium)
+        SelectionContainer {
+            when {
+                counts == null -> Text(
+                    stringResource(R.string.questions_observations_unavailable),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                counts.observedEpisodes == 0 -> Text(
+                    stringResource(R.string.questions_observations_empty),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                else -> Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    // Row gaps stay tighter than the title gap above them.
+                    CountRow(stringResource(R.string.questions_label_supported), counts.supportedEpisodes)
+                    CountRow(stringResource(R.string.questions_label_difficulty), counts.difficultyEpisodes)
+                    CountRow(stringResource(R.string.questions_label_neutral), counts.neutralEpisodes)
+                    CountRow(stringResource(R.string.questions_label_incomplete), counts.incompleteEpisodes)
+                    if (counts.pendingEpisodes > 0) {
+                        CountRow(stringResource(R.string.questions_label_pending), counts.pendingEpisodes)
+                    }
+                    CountRow(stringResource(R.string.questions_label_without_hints), counts.supportedWithoutGameHints)
+                    CountRow(stringResource(R.string.questions_label_assisted), counts.assistedEpisodes)
+                }
+            }
+        }
     }
-    MaterialCard(stringResource(R.string.questions_observations_title), body)
+}
+
+@Composable
+private fun CountRow(label: String, count: Int) {
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+        Text(count.toString(), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.End)
+    }
 }
 
 @Composable
