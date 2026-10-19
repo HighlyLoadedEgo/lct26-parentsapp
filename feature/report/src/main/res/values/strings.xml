@@ -39,7 +39,7 @@
     <string name="report_assessments_unavailable">Оценки не загрузились. Обновите отчёт позже.</string>
     <string name="report_assessments_stale">В игре уже случилось новое — до оценок это ещё не дошло.</string>
     <string name="report_materials_error">Советы не загрузились. Обновите отчёт позже.</string>
-    <string name="report_snapshot_missing">Мир игры пока не дошёл до облака. Откройте детское приложение с интернетом и обновите отчёт.</string>
+    <string name="report_snapshot_missing">По этому ID мира в облаке нет. Возможно, это ID прохождения игры, а не питомца. Возьмите ID заново: детское приложение → Настройки → «Код для родителей», или отсканируйте QR-код.</string>
     <string name="report_snapshot_stale">Оценки свежее сохранённого мира — данные питомца могут немного запаздывать.</string>
     <string name="report_pets">Герои</string>
     <string name="report_pets_add_qr">Добавить по QR-коду</string>
