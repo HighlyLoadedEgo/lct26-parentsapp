@@ -140,14 +140,16 @@ class StatisticsViewModelTest {
         val repository = object : ru.nksk.parentsapp.core.report.data.ParentReportRepository {
             override suspend fun getReport(petId: String): ru.nksk.parentsapp.core.report.data.ParentReportResponse {
                 if (fails) throw java.io.IOException("offline")
-                return FakeReportRepository().getReport(petId)
+                return FakeReportRepository().getReport(petId).copy(snapshotStale = true)
             }
         }
         val model = StatisticsViewModel(repository, session)
         model.load(null)
+        assertEquals(true, model.uiState.value.report?.snapshotStale)
         fails = true
         model.onAction(StatisticsAction.Reload)
         assertEquals("9f1c2d3e4a5b6078", model.uiState.value.report?.pet?.id)
+        assertEquals(true, model.uiState.value.report?.snapshotStale)
         assertEquals(R.string.report_load_error, model.uiState.value.errorRes)
     }
     @Test
@@ -182,5 +184,50 @@ class StatisticsViewModelTest {
         assertNull(backing.current)
         assertNull(model.uiState.value.report)
         assertTrue(model.uiState.value.resetDone)
+    }
+
+    @Test
+    fun `linking a second pet keeps both and selects the new one`() {
+        val session = FakePetSessionStore().apply { current = "aaa" }
+        val viewModel = StatisticsViewModel(FakeReportRepository(), session)
+        viewModel.load("bbb")
+        assertEquals(listOf("bbb", "aaa"), viewModel.uiState.value.pets.map { it.petId })
+        assertEquals("bbb", viewModel.uiState.value.report?.pet?.id)
+        assertEquals("bbb", session.current)
+        assertEquals("Рыжик", viewModel.uiState.value.pets.single { it.petId == "bbb" }.name)
+    }
+
+    @Test
+    fun `selecting a linked pet switches the report to it`() {
+        val session = FakePetSessionStore()
+        val viewModel = StatisticsViewModel(FakeReportRepository(), session)
+        viewModel.load("aaa")
+        viewModel.load("bbb")
+        viewModel.onAction(StatisticsAction.SelectPet("aaa"))
+        assertEquals("aaa", viewModel.uiState.value.report?.pet?.id)
+        assertEquals("aaa", session.current)
+    }
+
+    @Test
+    fun `removing the selected pet falls back to another linked pet`() {
+        val session = FakePetSessionStore()
+        val viewModel = StatisticsViewModel(FakeReportRepository(), session)
+        viewModel.load("aaa")
+        viewModel.load("bbb")
+        viewModel.onAction(StatisticsAction.RemovePet("bbb"))
+        assertEquals(listOf("aaa"), viewModel.uiState.value.pets.map { it.petId })
+        assertEquals("aaa", session.current)
+        assertEquals("aaa", viewModel.uiState.value.report?.pet?.id)
+    }
+
+    @Test
+    fun `removing the last pet shows the chooser`() {
+        val session = FakePetSessionStore()
+        val viewModel = StatisticsViewModel(FakeReportRepository(), session)
+        viewModel.load("aaa")
+        viewModel.onAction(StatisticsAction.RemovePet("aaa"))
+        assertTrue(viewModel.uiState.value.resetDone)
+        assertNull(viewModel.uiState.value.report)
+        assertNull(session.current)
     }
 }

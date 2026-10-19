@@ -20,13 +20,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -45,12 +52,80 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.dropUnlessResumed
 import ru.nksk.parentsapp.feature.report.R
+import ru.nksk.parentsapp.core.report.data.LinkedPet
 import ru.nksk.parentsapp.core.report.data.SkillDto
 import ru.nksk.parentsapp.core.report.data.SkillStatusDto
 
+/** Switch between the linked pets of the family, add another one or forget one. */
 @Composable
-private fun SkillDot(status: SkillStatusDto, modifier: Modifier = Modifier) {
-    val color = when (status) {
+private fun PetSwitcher(
+    pets: List<LinkedPet>,
+    selectedId: String,
+    onSelect: (String) -> Unit,
+    onAddByQr: () -> Unit,
+    onAddManually: () -> Unit,
+    onRemove: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier) {
+        OutlinedButton(
+            onClick = { expanded = true },
+            enabled = pets.isNotEmpty(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
+        ) {
+            Text(stringResource(R.string.report_pets))
+            Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            pets.forEach { pet ->
+                DropdownMenuItem(
+                    text = { Text(pet.name ?: pet.petId) },
+                    leadingIcon = {
+                        if (pet.petId == selectedId) {
+                            Icon(Icons.Default.Check, contentDescription = null)
+                        }
+                    },
+                    onClick = {
+                        expanded = false
+                        onSelect(pet.petId)
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            expanded = false
+                            onRemove(pet.petId)
+                        }) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.report_pets_remove),
+                            )
+                        }
+                    },
+                )
+            }
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.report_pets_add_qr)) },
+                onClick = {
+                    expanded = false
+                    onAddByQr()
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.report_pets_add_manual)) },
+                onClick = {
+                    expanded = false
+                    onAddManually()
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun SkillDot(status: SkillStatusDto, modifier: Modifier = Modifier) {    val color = when (status) {
         SkillStatusDto.MASTERED -> MaterialTheme.colorScheme.primary
         SkillStatusDto.PRACTICING -> MaterialTheme.colorScheme.secondary
         SkillStatusDto.NO_DATA -> MaterialTheme.colorScheme.surfaceVariant
@@ -182,6 +257,37 @@ private fun ResetPetDialog(
 }
 
 @Composable
+private fun RemovePetDialog(
+    petName: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.report_pets_remove_title)) },
+        text = { Text(stringResource(R.string.report_pets_remove_message, petName)) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    stringResource(R.string.report_pets_remove_confirm),
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            ) {
+                Text(stringResource(R.string.report_reset_cancel))
+            }
+        },
+    )
+}
+
+@Composable
 private fun EmptyState(
     onScanQr: () -> Unit,
     onManualInput: () -> Unit,
@@ -253,6 +359,20 @@ fun StatisticsScreen(
             onDismiss = { showResetDialog = false },
         )
     }
+    var petToRemove by remember { mutableStateOf<String?>(null) }
+    petToRemove?.let { petId ->
+        val name = state.pets.singleOrNull { it.petId == petId }?.name
+            ?: state.report?.pet?.name?.takeIf { state.report?.pet?.id == petId }
+            ?: petId
+        RemovePetDialog(
+            petName = name,
+            onConfirm = {
+                petToRemove = null
+                onAction(StatisticsAction.RemovePet(petId))
+            },
+            onDismiss = { petToRemove = null },
+        )
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -280,14 +400,14 @@ fun StatisticsScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                     Spacer(Modifier.weight(1f))
-                    TextButton(
-                        onClick = { showResetDialog = true },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
-                    ) {
-                        Text(stringResource(R.string.report_change_pet))
-                    }
+                    PetSwitcher(
+                        pets = state.pets,
+                        selectedId = report.pet.id,
+                        onSelect = { onAction(StatisticsAction.SelectPet(it)) },
+                        onAddByQr = onScanQr,
+                        onAddManually = onManualInput,
+                        onRemove = { petToRemove = it },
+                    )
                 }
                 Column(
                     modifier = Modifier
@@ -359,6 +479,7 @@ fun StatisticsScreen(
                     } else if (report.assessmentsStale) {
                         Text(stringResource(R.string.report_assessments_stale))
                     }
+                    if (report.snapshotStale) Text(stringResource(R.string.report_snapshot_stale))
                     if (report.materialsLoadFailed) Text(stringResource(R.string.report_materials_error))
                     if (state.loading) {
                         CircularProgressIndicator(Modifier.padding(top = 16.dp).size(24.dp))
@@ -408,9 +529,20 @@ fun StatisticsScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 20.dp, bottom = 24.dp),
+                            .padding(top = 20.dp),
                         textAlign = TextAlign.Center,
                     )
+                    TextButton(
+                        onClick = { petToRemove = report.pet.id },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp),
+                    ) {
+                        Text(stringResource(R.string.report_pets_remove))
+                    }
                 }
             }
             state.errorRes != null -> Column(
